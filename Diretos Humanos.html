@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz Direitos Humanos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+  /* Fundo colorido estilo desenho */
+  body {
+  margin: 0; padding: 0;
+  min-height: 100vh;
+  font-family: 'Comic Neue', cursive, Arial, sans-serif;
+  background: #a0d8f7;
+  background-image: url('Fundo.jpg'); /* Altere para o nome do seu arquivo */
+  background-size: cover; /* Faz a imagem cobrir toda a área */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Evita repetição */
+  background-attachment: fixed; /* Fixa o fundo durante a rolagem */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+  #app {
+    background: #fff;
+    width: 90vw;
+    max-width: 720px;
+    border-radius: 25px;
+    box-shadow:
+      0 12px 25px rgba(0, 0, 0, 0.2),
+      inset 0 0 50px #6a5acd22;
+    padding: 30px 35px 40px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    color: #6a5acd;
+    margin-bottom: 12px;
+    text-shadow: 0 0 10px #9e8affaa;
+    animation: pulseTitle 2s infinite alternate;
+  }
+  
+  @keyframes pulseTitle {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+  
+  p.description {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    color: #444;
+    line-height: 1.5;
+  }
+
+  button {
+    background: #6a5acd;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 16px 36px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 15px #6a5acdaa;
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.15s ease;
+    user-select: none;
+    margin: 10px 8px;
+  }
+  button:hover:not(:disabled) {
+    background: #5649bb;
+    box-shadow: 0 8px 25px #5649bbcc;
+    transform: scale(1.1);
+  }
+  button:disabled {
+    background: #bbb;
+    box-shadow: none;
+    cursor: default;
+    transform: none;
+  }
+
+  /* Screens */
+  section {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+  section.active {
+    display: flex;
+  }
+
+  #level-notice {
+    font-size: 2rem;
+    color: #8b5ac6;
+    text-shadow: 0 0 20px #d4b3ffcc;
+    margin-bottom: 25px;
+    font-weight: 900;
+    animation: pulseLevel 1.4s infinite alternate ease-in-out;
+  }
+  @keyframes pulseLevel {
+    0% { text-shadow: 0 0 20px #d4b3ffcc; color: #8b5ac6;}
+    100% { text-shadow: 0 0 40px #b18affff; color: #6a5acd;}
+  }
+
+  /* Quiz */
+  #question-text {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #4a3a7e;
+    min-height: 90px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #answers-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  .answer-btn {
+    background: #957bbe;
+    color: #f4e1ff;
+    flex: 1 1 40%;
+    max-width: 48%;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 14px #957bbebb;
+    user-select: none;
+    transition: all 0.3s ease;
+    animation: popIn 0.3s ease;
+  }
+  
+  @keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  .answer-btn:hover:not(:disabled) {
+    background: #7d5db2;
+    box-shadow: 0 7px 20px #7d5db2cc;
+    transform: scale(1.05);
+  }
+  .answer-btn.correct {
+    background: #27ae60 !important;
+    box-shadow: 0 0 20px #2ecc7133;
+    color: #fff !important;
+    animation: correctAnswer 0.5s ease;
+  }
+  
+  @keyframes correctAnswer {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .answer-btn.wrong {
+    background: #e74c3c !important;
+    box-shadow: 0 0 20px #e74c3cbb;
+    color: #fff !important;
+    animation: wrongAnswer 0.5s ease;
+  }
+  
+  @keyframes wrongAnswer {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+
+  #feedback-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    min-height: 45px;
+    margin-bottom: 10px;
+    color: #444;
+    user-select: none;
+    text-shadow: 1px 1px 2px #fff;
+    animation: fadeIn 0.5s ease;
+  }
+
+  #scoreboard {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #4a3a7e;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  #controls {
+    margin-top: 22px;
+  }
+
+  #controls button {
+    min-width: 150px;
+  }
+
+  /* Resultado final */
+  #result-screen h1 {
+    font-size: 3rem;
+    color: #6a5acd;
+    margin-bottom: 15px;
+  }
+  #final-score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #4a3a7e;
+  }
+  
+  #high-score {
+    font-size: 1.8rem;
+    color: #27ae60;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #2ecc7055;
+  }
+
+  /* Timer */
+  #timer-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #6a5acd;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    animation: pulseTimer 1s infinite alternate;
+  }
+  
+  @keyframes pulseTimer {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+  
+  #timer-container.warning {
+    background: #e74c3c;
+    animation: pulseWarning 0.5s infinite alternate;
+  }
+  
+  @keyframes pulseWarning {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.2); }
+  }
+
+  /* Mensagem de tempo esgotado */
+  #timeout-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  #timeout-message-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 80%;
+    text-align: center;
+    animation: popIn 0.5s ease;
+  }
+  
+  #timeout-message h2 {
+    color: #e74c3c;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  #timeout-message p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+  }
+
+  /* Responsivo */
+  @media(max-width: 600px) {
+    .answer-btn {
+      max-width: 100%;
+      flex: 1 1 100%;
+    }
+    h1 {
+      font-size: 2.4rem;
+    }
+    #question-text {
+      font-size: 1.6rem;
+      min-height: 75px;
+    }
+    #timer-container {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      top: 15px;
+      right: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="app" role="main" aria-label="Quiz de Direitos Humanos para crianças">
+    <!-- Timer -->
+    <div id="timer-container" style="display: none;">15</div>
+    
+    <!-- Mensagem de tempo esgotado -->
+    <div id="timeout-message">
+      <div id="timeout-message-content">
+        <h2>Tempo Esgotado! ⏱️</h2>
+        <p>Você demorou muito para responder e o jogo foi reiniciado. Tente novamente mais rápido!</p>
+        <button id="timeout-ok-btn">OK, entendi!</button>
+      </div>
+    </div>
+    
+    <!-- Tela Inicial -->
+    <section id="start-screen" class="active" aria-live="polite">
+      <h1>Quiz Divertido<br>de Direitos Humanos</h1>
+      <p class="description">
+        Vamos aprender sobre direitos humanos de forma fácil e divertida!<br>
+        São 3 níveis: Fácil, Médio e Difícil.<br>
+        Você tem 15 segundos para cada pergunta!<br>
+        Pronto para começar essa aventura?
+      </p>
+      <button id="start-btn" aria-label="Iniciar quiz de direitos humanos">Iniciar Quiz</button>
+    </section>
+
+    <!-- Aviso do Nível -->
+    <section id="level-notice" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
+      <span id="level-name">Nível</span>
+      <button id="continue-level-btn" aria-label="Continuar para as perguntas do nível">Continuar</button>
+    </section>
+
+    <!-- Quiz -->
+    <section id="quiz-screen" aria-live="polite" aria-atomic="true" style="display:none;">
+      <div id="scoreboard" aria-label="Placar de pontos">
+        <span>Pontos: <span id="current-score">0</span></span>
+        <span>Recorde: <span id="high-score-display">0</span></span>
+      </div>
+      <div id="question-text" tabindex="0"></div>
+      <div id="answers-container" role="list"></div>
+      <div id="feedback-text" aria-live="polite"></div>
+      <div id="controls">
+        <button id="next-btn" disabled aria-label="Próxima pergunta">Próxima</button>
+        <button id="restart-btn" aria-label="Reiniciar quiz" style="display:none;">Reiniciar</button>
+      </div>
+    </section>
+
+    <!-- Tela Resultado Final -->
+    <section id="result-screen" aria-live="polite" style="display:none;">
+      <h1>Parabéns! 🎉</h1>
+      <div id="final-score"></div>
+      <div id="high-score"></div>
+      <button id="play-again-btn" aria-label="Jogar novamente">Jogar Novamente</button>
+    </section>
+
+    <footer>
+      <p>© 2025 Nelson Pedroso Norbach</p>
+    </footer>
+  </div>
+
+<script>
+  // Perguntas divididas por níveis
+  const niveis = {
+    facil: [
+      {
+        pergunta: "O que são os direitos humanos?",
+        opcoes: [
+          "Regras para brincar",
+          "Direitos de todas as pessoas",
+          "Apenas para adultos",
+          "Um jogo"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Qual destes é um direito humano?",
+        opcoes: [
+          "Dormir na escola",
+          "Ter uma casa",
+          "Ter brinquedos caros",
+          "Comer doces sempre"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Quem deve respeitar os direitos humanos?",
+        opcoes: [
+          "Só os professores",
+          "Todas as pessoas",
+          "Só os pais",
+          "Só os adultos"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Por que respeitar as diferenças é importante?",
+        opcoes: [
+          "Porque ninguém gosta de diferenças",
+          "Para sermos amigos e felizes",
+          "Porque é chato",
+          "Para ganhar brinquedos"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "O que podemos fazer para ajudar os outros?",
+        opcoes: [
+          "Ignorar",
+          "Brincar juntos e ajudar",
+          "Brigar",
+          "Ficar sozinho"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Todas as crianças têm direito a:",
+        opcoes: [
+          "Comer doces o dia todo",
+          "Estudar na escola",
+          "Ficar sem brincar",
+          "Não ir ao médico"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "O que é bullying?",
+        opcoes: [
+          "Brincar junto",
+          "Machucar e deixar os outros tristes",
+          "Ajudar um amigo",
+          "Fazer festa"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Se alguém está triste, o que devemos fazer?",
+        opcoes: [
+          "Ignorar",
+          "Ajudar e ouvir",
+          "Brigar",
+          "Ficar de longe"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Onde podemos aprender sobre direitos humanos?",
+        opcoes: [
+          "Na escola",
+          "Na rua",
+          "Só em casa",
+          "Na televisão o dia todo"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "O que devemos fazer quando alguém precisa de ajuda?",
+        opcoes: [
+          "Brincar sozinho",
+          "Ignorar",
+          "Ajudar com respeito",
+          "Fugir"
+        ],
+        resposta: 2
+      }
+    ],
+    medio: [
+      {
+        pergunta: "Por que é importante respeitar as regras?",
+        opcoes: [
+          "Para evitar confusão e proteger direitos",
+          "Para ser o mais rápido",
+          "Para ganhar prêmios",
+          "Para não fazer nada"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "Qual destes NÃO é um direito humano?",
+        opcoes: [
+          "Falar o que pensa",
+          "Ser respeitado",
+          "Brigar com os outros",
+          "Estudar"
+        ],
+        resposta: 2
+      },
+      {
+        pergunta: "O que significa igualdade?",
+        opcoes: [
+          "Alguns são melhores que outros",
+          "Todos têm os mesmos direitos",
+          "Só os adultos têm direitos",
+          "Só os ricos têm direitos"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Qual a melhor forma de resolver um conflito?",
+        opcoes: [
+          "Brigando",
+          "Conversando e respeitando",
+          "Ignorando o problema",
+          "Falando alto"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Quem protege os direitos humanos no mundo?",
+        opcoes: [
+          "Organizações como a ONU",
+          "A polícia local",
+          "Os professores",
+          "Os médicos"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "Direito à educação significa:",
+        opcoes: [
+          "Só alguns podem estudar",
+          "Todas as crianças têm direito de aprender",
+          "Só quem quer pode estudar",
+          "Apenas adultos estudam"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Direitos humanos protegem:",
+        opcoes: [
+          "Só adultos",
+          "Todas as pessoas, mesmo crianças",
+          "Só pessoas ricas",
+          "Só pessoas de certas regiões"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "O que é discriminação?",
+        opcoes: [
+          "Tratar todo mundo igual",
+          "Tratar alguém diferente por causa de cor, religião ou gênero",
+          "Ajudar os amigos",
+          "Fazer festa juntos"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Por que crianças precisam de proteção especial?",
+        opcoes: [
+          "Porque são fortes",
+          "Porque estão crescendo e aprendendo",
+          "Porque já sabem tudo",
+          "Porque não precisam"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Como você pode ajudar a proteger os direitos humanos?",
+        opcoes: [
+          "Brincando com todos e respeitando",
+          "Fazendo bagunça",
+          "Ignorando os outros",
+          "Brigando"
+        ],
+        resposta: 0
+      }
+    ],
+    dificil: [
+      {
+        pergunta: "O que significa cidadania?",
+        opcoes: [
+          "Ser amigo de todos",
+          "Participar da sociedade com direitos e deveres",
+          "Saber brincar",
+          "Ser adulto"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Qual órgão internacional cuida dos direitos humanos?",
+        opcoes: [
+          "ONU - Organização das Nações Unidas",
+          "NASA",
+          "FIFA",
+          "ONU - Organização dos Números Únicos"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "O que é liberdade de expressão?",
+        opcoes: [
+          "Falar o que pensa com respeito",
+          "Falar o que quiser sem respeitar",
+          "Ficar quieto",
+          "Brigar para falar"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "O que é racismo?",
+        opcoes: [
+          "Acreditar que todas as raças são iguais",
+          "Tratar alguém mal por causa da cor da pele",
+          "Ser amigo de todos",
+          "Não gostar de doces"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "Direitos humanos servem para proteger:",
+        opcoes: [
+          "Só quem ganha dinheiro",
+          "Todas as pessoas, sem distinção",
+          "Só as crianças",
+          "Só os adultos"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "O que significa defender os direitos humanos?",
+        opcoes: [
+          "Ignorar quando algo está errado",
+          "Lutar para que todos tenham seus direitos respeitados",
+          "Brincar sozinho",
+          "Ficar calado"
+        ],
+        resposta: 1
+      },
+      {
+        pergunta: "O que é justiça?",
+        opcoes: [
+          "Fazer o que é certo e igual para todos",
+          "Dar mais para os amigos",
+          "Ignorar problemas",
+          "Fazer o que der vontade"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "Por que devemos respeitar as opiniões dos outros?",
+        opcoes: [
+          "Para ajudar a convivência e a paz",
+          "Para ganhar brinquedos",
+          "Para ficar sozinho",
+          "Para não estudar"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "O que é um direito fundamental?",
+        opcoes: [
+          "Um direito básico para viver com dignidade",
+          "Um brinquedo novo",
+          "Só para adultos",
+          "Uma festa"
+        ],
+        resposta: 0
+      },
+      {
+        pergunta: "Qual o papel das escolas em relação aos direitos humanos?",
+        opcoes: [
+          "Ensinar e proteger os direitos de todos",
+          "Só ensinar matemática",
+          "Ignorar os problemas",
+          "Fazer os alunos brigarem"
+        ],
+        resposta: 0
+      }
+    ]
+  };
+
+  let nivelAtual = null;
+  let perguntasNivelAtual = [];
+  let indicePergunta = 0;
+  let pontos = 0;
+  let timerInterval = null;
+  let currentTime = 15;
+  let highScore = localStorage.getItem('quizDH_highScore') || 0;
+
+  // Elementos
+  const startScreen = document.getElementById('start-screen');
+  const startBtn = document.getElementById('start-btn');
+  const levelNotice = document.getElementById('level-notice');
+  const levelName = document.getElementById('level-name');
+  const continueLevelBtn = document.getElementById('continue-level-btn');
+  const quizScreen = document.getElementById('quiz-screen');
+  const questionText = document.getElementById('question-text');
+  const answersContainer = document.getElementById('answers-container');
+  const feedbackText = document.getElementById('feedback-text');
+  const nextBtn = document.getElementById('next-btn');
+  const restartBtn = document.getElementById('restart-btn');
+  const currentScoreDisplay = document.getElementById('current-score');
+  const highScoreDisplay = document.getElementById('high-score-display');
+  const resultScreen = document.getElementById('result-screen');
+  const finalScore = document.getElementById('final-score');
+  const highScoreResult = document.getElementById('high-score');
+  const playAgainBtn = document.getElementById('play-again-btn');
+  const timerContainer = document.getElementById('timer-container');
+  const timeoutMessage = document.getElementById('timeout-message');
+  const timeoutOkBtn = document.getElementById('timeout-ok-btn');
+
+  // Sons para feedback
+  const somAcerto = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
+  const somErro = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
+  const somTempo = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+
+  // Função para embaralhar array (Fisher-Yates)
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function mostrarTela(tela) {
+    // Esconder tudo
+    startScreen.style.display = 'none';
+    levelNotice.style.display = 'none';
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'none';
+    timerContainer.style.display = 'none';
+    
+    // Mostrar só a tela selecionada
+    tela.style.display = 'flex';
+    
+    // Mostrar timer apenas na tela do quiz
+    if (tela === quizScreen) {
+      timerContainer.style.display = 'flex';
+    }
+  }
+
+  function startTimer() {
+    // Resetar o tempo
+    currentTime = 15;
+    timerContainer.textContent = currentTime;
+    timerContainer.classList.remove('warning');
+    
+    // Limpar intervalo anterior se existir
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    
+    // Iniciar novo timer
+    timerInterval = setInterval(() => {
+      currentTime--;
+      timerContainer.textContent = currentTime;
+      
+      // Aviso visual quando faltam 5 segundos
+      if (currentTime <= 5) {
+        timerContainer.classList.add('warning');
+        somTempo.play();
+      }
+      
+      if (currentTime <= 0) {
+        clearInterval(timerInterval);
+        mostrarMensagemTempoEsgotado();
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    timerContainer.classList.remove('warning');
+  }
+
+  function mostrarMensagemTempoEsgotado() {
+    timeoutMessage.style.display = 'flex';
+  }
+
+  function esconderMensagemTempoEsgotado() {
+    timeoutMessage.style.display = 'none';
+    reiniciarJogo();
+  }
+
+  function atualizarPlacar() {
+    currentScoreDisplay.textContent = pontos;
+    highScoreDisplay.textContent = highScore;
+  }
+
+  function verificarRecorde() {
+    if (pontos > highScore) {
+      highScore = pontos;
+      localStorage.setItem('quizDH_highScore', highScore);
+      return true;
+    }
+    return false;
+  }
+
+  function mostrarNivel(nivel) {
+    nivelAtual = nivel;
+    
+    // Embaralhar as perguntas e fazer uma cópia para não modificar o original
+    perguntasNivelAtual = shuffleArray([...niveis[nivelAtual]]);
+    
+    indicePergunta = 0;
+    feedbackText.textContent = '';
+    nextBtn.disabled = true;
+    restartBtn.style.display = 'none';
+    atualizarPlacar();
+    levelName.textContent = `Nível: ${nivelAtual[0].toUpperCase() + nivelAtual.slice(1)}`;
+    mostrarTela(levelNotice);
+  }
+
+  // Mostrar pergunta atual
+  function mostrarPergunta() {
+    feedbackText.textContent = '';
+    nextBtn.disabled = true;
+    restartBtn.style.display = 'none';
+
+    const p = perguntasNivelAtual[indicePergunta];
+    questionText.textContent = p.pergunta;
+    answersContainer.innerHTML = '';
+
+    // Embaralhar as opções de resposta
+    const opcoesEmbaralhadas = [...p.opcoes];
+    const respostaCorreta = p.opcoes[p.resposta];
+    
+    // Embaralhar mantendo controle da resposta correta
+    shuffleArray(opcoesEmbaralhadas);
+    
+    // Atualizar o índice da resposta correta
+    const novaResposta = opcoesEmbaralhadas.indexOf(respostaCorreta);
+
+    opcoesEmbaralhadas.forEach((opcao, i) => {
+      const btn = document.createElement('button');
+      btn.classList.add('answer-btn');
+      btn.textContent = opcao;
+      btn.setAttribute('role', 'listitem');
+      btn.dataset.index = i;
+      btn.dataset.correct = (i === novaResposta);
+      btn.style.animationDelay = `${i * 0.1}s`;
+      btn.addEventListener('click', responderPergunta);
+      answersContainer.appendChild(btn);
+    });
+    
+    // Atualizar a resposta correta no objeto da pergunta
+    p.resposta = novaResposta;
+    
+    // Iniciar o timer para esta pergunta
+    startTimer();
+  }
+
+  // Ação ao responder
+  function responderPergunta(event) {
+    stopTimer(); // Parar o timer quando responder
+    
+    const respostaEscolhida = parseInt(event.currentTarget.dataset.index);
+    const p = perguntasNivelAtual[indicePergunta];
+    const botoes = answersContainer.querySelectorAll('button');
+
+    // Desabilitar todos os botões
+    botoes.forEach(btn => btn.disabled = true);
+
+    if (respostaEscolhida === p.resposta) {
+      event.currentTarget.classList.add('correct');
+      feedbackText.textContent = "Você acertou! 🎉";
+      pontos += 10;
+      somAcerto.play();
+    } else {
+      event.currentTarget.classList.add('wrong');
+      feedbackText.textContent = `Ops, a resposta correta era: "${p.opcoes[p.resposta]}"`;
+      botoes[p.resposta].classList.add('correct');
+      somErro.play();
+    }
+
+    atualizarPlacar();
+    nextBtn.disabled = false;
+  }
+
+  // Próxima pergunta ou próximo nível
+  function proximaPergunta() {
+    stopTimer(); // Parar o timer antes de mudar de pergunta
+    
+    indicePergunta++;
+    if (indicePergunta >= perguntasNivelAtual.length) {
+      // Mudar de nível ou finalizar
+      if (nivelAtual === 'facil') {
+        mostrarNivel('medio');
+      } else if (nivelAtual === 'medio') {
+        mostrarNivel('dificil');
+      } else {
+        mostrarResultadoFinal();
+      }
+    } else {
+      mostrarPergunta();
+    }
+  }
+
+  // Mostrar resultado final
+  function mostrarResultadoFinal() {
+    const novoRecorde = verificarRecorde();
+    mostrarTela(resultScreen);
+    finalScore.textContent = `Sua pontuação total: ${pontos} pontos!`;
+    
+    if (novoRecorde) {
+      highScoreResult.textContent = `🎉 Novo recorde! 🎉`;
+      highScoreResult.style.animation = "pulseLevel 1s infinite alternate";
+    } else {
+      highScoreResult.textContent = `Seu recorde: ${highScore} pontos`;
+    }
+    
+    restartBtn.style.display = 'inline-block';
+    restartBtn.textContent = 'Reiniciar Quiz';
+  }
+
+  // Resetar jogo
+  function reiniciarJogo() {
+    stopTimer();
+    pontos = 0;
+    nivelAtual = null;
+    indicePergunta = 0;
+    perguntasNivelAtual = [];
+    mostrarTela(startScreen);
+    atualizarPlacar();
+  }
+
+  // Eventos
+  startBtn.addEventListener('click', () => {
+    pontos = 0;
+    mostrarNivel('facil');
+  });
+  
+  continueLevelBtn.addEventListener('click', () => {
+    feedbackText.textContent = '';
+    mostrarTela(quizScreen);
+    mostrarPergunta();
+  });
+  
+  nextBtn.addEventListener('click', () => {
+    proximaPergunta();
+  });
+  
+  restartBtn.addEventListener('click', () => {
+    reiniciarJogo();
+  });
+  
+  playAgainBtn.addEventListener('click', () => {
+    reiniciarJogo();
+  });
+  
+  timeoutOkBtn.addEventListener('click', () => {
+    esconderMensagemTempoEsgotado();
+  });
+
+  // Ao carregar, mostrar tela inicial e atualizar placar
+  window.onload = () => {
+    mostrarTela(startScreen);
+    atualizarPlacar();
+  };
+</script>
+</body>
+</html>
