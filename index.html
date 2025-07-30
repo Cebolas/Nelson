@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jogo da Escolha Certa – por Nelson Pedroso Norbach</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4caf50;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --info: #2196f3;
+      --easy: #4caf50;
+      --medium: #ff9800;
+      --hard: #f44336;
+      --beginner: #4caf50;
+      --intermediate: #ff9800;
+      --advanced: #f44336;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      background-attachment: fixed;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+      will-change: transform, opacity;
+      margin-bottom: 20px;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.8rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: 10px;
+      min-width: 200px;
+      will-change: transform;
+    }
+
+    .btn:hover {
+      background-color: var(--secondary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-option {
+      background-color: white;
+      color: var(--dark);
+      border: 2px solid var(--primary);
+      padding: 12px 20px;
+      transition: all 0.2s;
+      width: 100%;
+      text-align: left;
+      margin: 8px 0;
+      border-radius: 10px;
+      will-change: transform;
+    }
+
+    .btn-option:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateX(10px);
+    }
+
+    .btn-option.correct {
+      background-color: var(--success);
+      color: white;
+      border-color: var(--success);
+      animation: pulse 0.5s;
+    }
+
+    .btn-option.incorrect {
+      background-color: var(--danger);
+      color: white;
+      border-color: var(--danger);
+      animation: shake 0.5s;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      transition: width 0.5s ease;
+      border-radius: 5px;
+    }
+
+    .xp-container {
+      width: 100%;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .xp-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4cc9f0, #4361ee);
+      width: 0%;
+      transition: width 0.5s ease;
+      border-radius: 5px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      background-color: rgba(67, 97, 238, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      margin: 5px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .question {
+      font-size: 1.4rem;
+      margin: 25px 0;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .feedback {
+      font-size: 1.2rem;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      animation: fadeIn 0.5s;
+    }
+
+    .feedback.correct {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--success);
+      border-left: 5px solid var(--success);
+    }
+
+    .feedback.incorrect {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+      border-left: 5px solid var(--danger);
+    }
+
+    .explanation {
+      font-size: 1.1rem;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: rgba(33, 150, 243, 0.1);
+      border-left: 5px solid var(--info);
+      border-radius: 0 10px 10px 0;
+      text-align: left;
+    }
+
+    .timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 50px;
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+
+    .timer.warning {
+      color: var(--warning);
+      animation: pulse 1s infinite;
+    }
+
+    .timer.danger {
+      color: var(--danger);
+      animation: pulse 0.5s infinite;
+    }
+
+    .celebrate {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 5rem;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: var(--primary);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .creditos {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+    }
+
+    .emoji {
+      font-size: 1.5rem;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .difficulty-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .easy {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--easy);
+    }
+
+    .medium {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--medium);
+    }
+
+    .hard {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--hard);
+    }
+
+    .beginner {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--beginner);
+    }
+
+    .intermediate {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--intermediate);
+    }
+
+    .advanced {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--advanced);
+    }
+
+    .category-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .lives {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .life {
+      font-size: 1.5rem;
+      margin: 0 5px;
+      color: var(--danger);
+      transition: all 0.3s;
+    }
+
+    .life.lost {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+
+    .tip-container {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: rgba(76, 175, 80, 0.1);
+      border-left: 5px solid var(--success);
+      border-radius: 0 10px 10px 0;
+      text-align: left;
+      animation: fadeIn 0.5s;
+    }
+
+    .tip-title {
+      font-weight: bold;
+      color: var(--success);
+      margin-bottom: 5px;
+    }
+
+    .level-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .level-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .level-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .achievement {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin: 5px 0;
+      background-color: rgba(67, 97, 238, 0.1);
+      border-radius: 10px;
+    }
+
+    .achievement-icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+    }
+
+    .achievement-locked {
+      opacity: 0.5;
+    }
+
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 15px;
+    }
+
+    #start-screen, #quiz-screen, #profile-screen, #achievements-screen {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .question {
+        font-size: 1.2rem;
+      }
+      
+      .btn {
+        padding: 12px 20px;
+        min-width: 150px;
+      }
+      
+      .stats {
+        flex-direction: column;
+      }
+      
+      .stat {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="start-screen">
+    <h1>Segurança na Internet</h1>
+    <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 30px;">Bem-vindo ao Jogo da Escolha Certa! Aqui você vai aprender a se proteger na internet de maneira divertida e segura.</p>
+    <button class="btn" onclick="startGame()">
+      <span class="emoji">🎮</span> Começar Jogo
+    </button>
+    <button class="btn" onclick="showProfile()">
+      <span class="emoji">👤</span> Meu Perfil
+    </button>
+    <button class="btn" onclick="showAchievements()">
+      <span class="emoji">🏆</span> Conquistas
+    </button>
+    <div style="margin-top: 30px; text-align: left; background-color: rgba(67, 97, 238, 0.05); padding: 15px; border-radius: 10px;">
+      <h3 style="margin-top: 0; color: var(--primary);">Novo Sistema de Progressão:</h3>
+      <ul style="padding-left: 20px;">
+        <li>3 níveis de dificuldade: Iniciante, Intermediário e Avançado</li>
+        <li>Barra de experiência e sistema de níveis</li>
+        <li>Conteúdo que desbloqueia conforme você progride</li>
+        <li>Conquistas para desafios especiais</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container" id="quiz-screen">
+    <h1>Segurança na Internet</h1>
+    
+    <div class="level-container">
+      <div class="level-info">
+        <div class="level-badge" id="level-badge">1</div>
+        <div>
+          <div>Nível <span id="level">1</span></div>
+          <div id="level-name" class="beginner">Iniciante</div>
+        </div>
+      </div>
+      <div style="width: 60%;">
+        <div style="text-align: right; font-size: 0.8rem; margin-bottom: 3px;">
+          <span id="current-xp">0</span>/<span id="next-level-xp">100</span> XP
+        </div>
+        <div class="xp-container">
+          <div class="xp-bar" id="xp-bar"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="lives" id="lives-container">
+      <span class="life">❤️</span>
+      <span class="life">❤️</span>
+      <span class="life">❤️</span>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <span>Pergunta</span>
+        <span class="stat-value" id="question-count">1/10</span>
+      </div>
+      <div class="stat">
+        <span>Pontos</span>
+        <span class="stat-value" id="score">0</span>
+      </div>
+      <div class="stat">
+        <span>Tempo</span>
+        <span class="stat-value timer" id="timer">10s</span>
+      </div>
+    </div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <div id="category-tag" class="category-tag"></div>
+    <p class="question" id="question-text">Carregando pergunta...</p>
+    <div class="options" id="options-container"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explanation" id="explanation" style="display:none;"></div>
+    
+    <div class="tip-container" id="tip-container" style="display:none;">
+      <div class="tip-title">💡 Dica de Segurança</div>
+      <div id="tip-content"></div>
+    </div>
+    
+    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none; margin-top: 20px;">
+      <span class="emoji">➡️</span> Próxima Pergunta
+    </button>
+  </div>
+
+  <div class="container" id="profile-screen">
+    <h1>Meu Perfil</h1>
+    
+    <div class="profile-pic" id="profile-pic">
+      👤
+    </div>
+    
+    <h2 id="player-name">Jogador</h2>
+    
+    <div class="stats">
+      <div class="stat">
+        <span>Nível</span>
+        <span class="stat-value" id="profile-level">1</span>
+      </div>
+      <div class="stat">
+        <span>XP</span>
+        <span class="stat-value" id="profile-xp">0</span>
+      </div>
+      <div class="stat">
+        <span>Acertos</span>
+        <span class="stat-value" id="profile-correct">0</span>
+      </div>
+    </div>
+    
+    <div style="text-align: left; margin: 20px 0;">
+      <h3 style="color: var(--primary);">Progresso:</h3>
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between;">
+          <span>Iniciante</span>
+          <span id="beginner-progress">0%</span>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" id="beginner-bar" style="background: var(--beginner); width: 0%;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between;">
+          <span>Intermediário</span>
+          <span id="intermediate-progress">0%</span>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" id="intermediate-bar" style="background: var(--intermediate); width: 0%;"></div>
+        </div>
+      </div>
+      <div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Avançado</span>
+          <span id="advanced-progress">0%</span>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" id="advanced-bar" style="background: var(--advanced); width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="btn" onclick="showStartScreen()">
+      <span class="emoji">🏠</span> Voltar
+    </button>
+  </div>
+
+  <div class="container" id="achievements-screen">
+    <h1>Conquistas</h1>
+    
+    <div id="achievements-list" style="text-align: left;">
+      <!-- Conquistas serão adicionadas aqui pelo JavaScript -->
+    </div>
+    
+    <button class="btn" onclick="showStartScreen()">
+      <span class="emoji">🏠</span> Voltar
+    </button>
+  </div>
+
+  <div class="celebrate" id="celebrate"></div>
+
+  <p class="creditos">&copy; 2025 – Desenvolvido por Nelson Pedroso Norbach. Todos os direitos reservados.</p>
+
+  <script>
+    // Sistema de Progressão
+    const player = {
+      name: "Jogador",
+      level: 1,
+      xp: 0,
+      nextLevelXp: 100,
+      correctAnswers: 0,
+      totalAnswers: 0,
+      beginnerProgress: 0,
+      intermediateProgress: 0,
+      advancedProgress: 0,
+      unlockedLevels: ["beginner"],
+      achievements: []
+    };
+
+    // Carrega o progresso do localStorage
+    function loadProgress() {
+      const savedProgress = localStorage.getItem('securityGameProgress');
+      if (savedProgress) {
+        Object.assign(player, JSON.parse(savedProgress));
+      }
+    }
+
+    // Salva o progresso no localStorage
+    function saveProgress() {
+      localStorage.setItem('securityGameProgress', JSON.stringify(player));
+    }
+
+    // Adiciona XP e verifica se subiu de nível
+    function addXP(amount) {
+      player.xp += amount;
+      player.totalAnswers += 1;
+      
+      // Verifica se subiu de nível
+      if (player.xp >= player.nextLevelXp) {
+        player.level += 1;
+        player.xp = player.xp - player.nextLevelXp;
+        player.nextLevelXp = Math.floor(player.nextLevelXp * 1.5);
+        
+        // Desbloqueia novos níveis conforme progride
+        if (player.level >= 5 && !player.unlockedLevels.includes('intermediate')) {
+          player.unlockedLevels.push('intermediate');
+          showMessage("Novo nível desbloqueado: Intermediário!");
+        }
+        if (player.level >= 10 && !player.unlockedLevels.includes('advanced')) {
+          player.unlockedLevels.push('advanced');
+          showMessage("Novo nível desbloqueado: Avançado!");
+        }
+        
+        showCelebration(`🎉 Parabéns! Você atingiu o nível ${player.level}!`);
+      }
+      
+      updateProfile();
+      saveProgress();
+    }
+
+    // Atualiza a exibição do perfil
+    function updateProfile() {
+      document.getElementById('profile-level').textContent = player.level;
+      document.getElementById('profile-xp').textContent = player.xp;
+      document.getElementById('profile-correct').textContent = player.correctAnswers;
+      
+      // Atualiza barra de XP
+      document.getElementById('current-xp').textContent = player.xp;
+      document.getElementById('next-level-xp').textContent = player.nextLevelXp;
+      document.getElementById('xp-bar').style.width = `${(player.xp / player.nextLevelXp) * 100}%`;
+      
+      // Atualiza nível
+      document.getElementById('level').textContent = player.level;
+      document.getElementById('level-badge').textContent = player.level;
+      
+      // Atualiza nome do nível
+      const levelNameEl = document.getElementById('level-name');
+      levelNameEl.className = '';
+      if (player.level < 5) {
+        levelNameEl.textContent = "Iniciante";
+        levelNameEl.classList.add('beginner');
+      } else if (player.level < 10) {
+        levelNameEl.textContent = "Intermediário";
+        levelNameEl.classList.add('intermediate');
+      } else {
+        levelNameEl.textContent = "Avançado";
+        levelNameEl.classList.add('advanced');
+      }
+      
+      // Atualiza progresso por nível de dificuldade
+      document.getElementById('beginner-progress').textContent = `${player.beginnerProgress}%`;
+      document.getElementById('beginner-bar').style.width = `${player.beginnerProgress}%`;
+      document.getElementById('intermediate-progress').textContent = `${player.intermediateProgress}%`;
+      document.getElementById('intermediate-bar').style.width = `${player.intermediateProgress}%`;
+      document.getElementById('advanced-progress').textContent = `${player.advancedProgress}%`;
+      document.getElementById('advanced-bar').style.width = `${player.advancedProgress}%`;
+    }
+
+    // Conquistas
+    const achievements = [
+      {
+        id: "beginner_master",
+        name: "Mestre Iniciante",
+        description: "Complete 20 perguntas do nível Iniciante",
+        icon: "📚",
+        check: () => player.beginnerProgress >= 100,
+        xpReward: 50,
+        unlocked: false
+      },
+      {
+        id: "fast_learner",
+        name: "Aprendiz Rápido",
+        description: "Acertar 5 perguntas seguidas",
+        icon: "⚡",
+        check: (currentStreak) => currentStreak >= 5,
+        xpReward: 30,
+        unlocked: false
+      },
+      {
+        id: "perfect_score",
+        name: "Pontuação Perfeita",
+        description: "Acertar todas as perguntas de uma sessão",
+        icon: "💯",
+        check: (sessionScore, totalQuestions) => sessionScore === totalQuestions,
+        xpReward: 100,
+        unlocked: false
+      },
+      {
+        id: "intermediate_unlock",
+        name: "Próximo Nível",
+        description: "Desbloqueie o nível Intermediário",
+        icon: "🔓",
+        check: () => player.unlockedLevels.includes('intermediate'),
+        xpReward: 75,
+        unlocked: false
+      },
+      {
+        id: "advanced_unlock",
+        name: "Expert em Segurança",
+        description: "Desbloqueie o nível Avançado",
+        icon: "🏆",
+        check: () => player.unlockedLevels.includes('advanced'),
+        xpReward: 150,
+        unlocked: false
+      }
+    ];
+
+    // Verifica conquistas
+    function checkAchievements(currentStreak = 0, sessionScore = 0, totalQuestions = 0) {
+      let newAchievements = [];
+      
+      achievements.forEach(achievement => {
+        if (!achievement.unlocked && achievement.check(currentStreak, sessionScore, totalQuestions)) {
+          achievement.unlocked = true;
+          player.achievements.push(achievement.id);
+          newAchievements.push(achievement);
+          addXP(achievement.xpReward);
+        }
+      });
+      
+      if (newAchievements.length > 0) {
+        showAchievementsUnlocked(newAchievements);
+      }
+      
+      saveProgress();
+    }
+
+    // Mostra conquistas desbloqueadas
+    function showAchievementsUnlocked(newAchievements) {
+      let message = "🎉 Conquista desbloqueada!\n";
+      newAchievements.forEach(ach => {
+        message += `\n${ach.icon} ${ach.name} - ${ach.description}`;
+      });
+      
+      alert(message);
+      updateAchievementsDisplay();
+    }
+
+    // Atualiza a exibição das conquistas
+    function updateAchievementsDisplay() {
+      const container = document.getElementById('achievements-list');
+      container.innerHTML = '';
+      
+      achievements.forEach(achievement => {
+        const isUnlocked = player.achievements.includes(achievement.id);
+        
+        const achievementEl = document.createElement('div');
+        achievementEl.className = `achievement ${isUnlocked ? '' : 'achievement-locked'}`;
+        
+        achievementEl.innerHTML = `
+          <div class="achievement-icon">${isUnlocked ? achievement.icon : '🔒'}</div>
+          <div>
+            <div style="font-weight: bold;">${achievement.name}</div>
+            <div style="font-size: 0.9rem;">${achievement.description}</div>
+            ${isUnlocked ? `<div style="font-size: 0.8rem; color: var(--success);">+${achievement.xpReward} XP</div>` : ''}
+          </div>
+        `;
+        
+        container.appendChild(achievementEl);
+      });
+    }
+
+    // Banco de perguntas organizado por nível
+    const quiz = {
+      beginner: [
+        { 
+          pergunta: "Você deve compartilhar sua senha com amigos?", 
+          opcoes: ["Sim", "Não", "Só com melhores amigos", "Depende do site"], 
+          correta: 1, 
+          explicacao: "Nunca compartilhe senhas, nem com amigos.", 
+          category: "Senhas"
+        },
+        { 
+          pergunta: "É seguro clicar em links de desconhecidos?", 
+          opcoes: ["Sim", "Não", "Somente em jogos", "Se estiver no WhatsApp"], 
+          correta: 1, 
+          explicacao: "Links desconhecidos podem conter vírus.", 
+          category: "Golpes"
+        },
+        { 
+          pergunta: "O que significa o cadeado verde na barra de endereços?", 
+          opcoes: ["Que o site é bonito", "Que a conexão é segura", "Que é um site oficial", "Que tem muitas imagens"], 
+          correta: 1, 
+          explicacao: "O cadeado verde indica que a conexão é criptografada e mais segura.", 
+          category: "Navegação"
+        }
+      ],
+      intermediate: [
+        { 
+          pergunta: "O que fazer se receber um e-mail pedindo para atualizar seus dados bancários?", 
+          opcoes: ["Clicar no link e atualizar", "Responder com seus dados", "Ignorar e reportar como phishing", "Encaminhar para amigos"], 
+          correta: 2, 
+          explicacao: "Bancos nunca pedem dados por e-mail. Isso é phishing.", 
+          category: "Golpes",
+          situacional: true
+        },
+        { 
+          pergunta: "Qual a melhor prática para senhas em diferentes sites?", 
+          opcoes: ["Usar a mesma senha em tudo", "Usar senhas únicas para cada site", "Anotar todas em um papel", "Usar combinações simples"], 
+          correta: 1, 
+          explicacao: "Use senhas únicas para cada site. Considere um gerenciador de senhas.", 
+          category: "Senhas"
+        },
+        { 
+          pergunta: "O que é autenticação de dois fatores (2FA)?", 
+          opcoes: ["Usar duas senhas", "Confirmar login com código por SMS/app", "Ter duas contas", "Usar senha e nome de usuário"], 
+          correta: 1, 
+          explicacao: "2FA adiciona uma camada extra de segurança com um código temporário.", 
+          category: "Segurança"
+        }
+      ],
+      advanced: [
+        { 
+          pergunta: "Como identificar uma rede Wi-Fi falsa em locais públicos?", 
+          opcoes: [
+            "Pelo nome parecido com o estabelecimento", 
+            "Por não pedir senha", 
+            "Por ter sinal muito forte", 
+            "Todas as anteriores"
+          ], 
+          correta: 3, 
+          explicacao: "Redes falsas podem imitar nomes, oferecer acesso fácil e sinal forte para atrair vítimas.", 
+          category: "Redes",
+          situacional: true
+        },
+        { 
+          pergunta: "O que fazer se suspeitar que seu dispositivo tem malware?", 
+          opcoes: [
+            "Formatar imediatamente", 
+            "Rodar antivírus e mudar senhas importantes", 
+            "Ignorar e continuar usando", 
+            "Vender o dispositivo"
+          ], 
+          correta: 1, 
+          explicacao: "Execute uma verificação completa, mude senhas e monitore contas.", 
+          category: "Segurança",
+          situacional: true
+        },
+        { 
+          pergunta: "Qual a vantagem de usar uma VPN em redes públicas?", 
+          opcoes: [
+            "Deixa a internet mais rápida", 
+            "Criptografa toda sua comunicação", 
+            "Permite acessar sites bloqueados", 
+            "Todas as anteriores"
+          ], 
+          correta: 1, 
+          explicacao: "VPNs criam um túnel criptografado, protegendo seus dados em redes não confiáveis.", 
+          category: "Privacidade"
+        }
+      ]
+    };
+
+    // Dicas de segurança
+    const tips = [
+      "Nunca use a mesma senha em múltiplos sites! Se um site for invadido, todas suas contas estarão em risco.",
+      "Ative a autenticação em dois fatores sempre que possível. Isso adiciona uma camada extra de segurança.",
+      "Cuidado com redes Wi-Fi públicas. Evite acessar contas importantes em redes não confiáveis.",
+      "Mantenha seus dispositivos e aplicativos sempre atualizados. Atualizações frequentemente corrigem falhas de segurança.",
+      "Faça backup regular dos seus dados importantes. Assim você não perde tudo se for vítima de ransomware."
+    ];
+
+    // Variáveis do jogo
+    let currentQuestion = 0;
+    let score = 0;
+    let timer;
+    let timeLeft = 10;
+    let answered = false;
+    let lives = 3;
+    let currentQuestions = [];
+    let currentStreak = 0;
+    let currentDifficulty = 'beginner';
+
+    // Elementos do DOM
+    const questionEl = document.getElementById('question-text');
+    const optionsEl = document.getElementById('options-container');
+    const feedbackEl = document.getElementById('feedback');
+    const explanationEl = document.getElementById('explanation');
+    const nextBtn = document.getElementById('next-btn');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer');
+    const questionCountEl = document.getElementById('question-count');
+    const progressBarEl = document.getElementById('progress-bar');
+    const celebrateEl = document.getElementById('celebrate');
+    const livesContainer = document.getElementById('lives-container');
+    const categoryTag = document.getElementById('category-tag');
+    const tipContainer = document.getElementById('tip-container');
+    const tipContent = document.getElementById('tip-content');
+
+    // Inicialização
+    loadProgress();
+    updateProfile();
+    updateAchievementsDisplay();
+
+    function startGame() {
+      // Seleciona perguntas baseado no nível desbloqueado
+      currentDifficulty = getCurrentDifficulty();
+      currentQuestions = selectQuestions(currentDifficulty);
+      
+      // Reinicia variáveis da sessão
+      currentQuestion = 0;
+      score = 0;
+      lives = 3;
+      currentStreak = 0;
+      
+      // Atualiza UI
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      updateLivesDisplay();
+      showQuestion();
+    }
+
+    function getCurrentDifficulty() {
+      if (player.unlockedLevels.includes('advanced') && player.level >= 10) {
+        return 'advanced';
+      } else if (player.unlockedLevels.includes('intermediate') && player.level >= 5) {
+        return 'intermediate';
+      }
+      return 'beginner';
+    }
+
+    function selectQuestions(difficulty) {
+      // Seleciona 10 perguntas aleatórias do nível atual
+      const questions = [...quiz[difficulty]];
+      return shuffleArray(questions).slice(0, 10);
+    }
+
+    function showQuestion() {
+      answered = false;
+      clearInterval(timer);
+      
+      const q = currentQuestions[currentQuestion];
+      timeLeft = q.situacional ? 20 : 10;
+      startTimer();
+      
+      questionEl.textContent = q.pergunta;
+      questionCountEl.textContent = `${currentQuestion + 1}/${currentQuestions.length}`;
+      progressBarEl.style.width = `${((currentQuestion) / currentQuestions.length) * 100}%`;
+      
+      // Mostra categoria
+      categoryTag.textContent = q.category;
+      categoryTag.style.display = 'inline-block';
+      
+      optionsEl.innerHTML = '';
+      feedbackEl.textContent = '';
+      feedbackEl.className = 'feedback';
+      explanationEl.style.display = 'none';
+      tipContainer.style.display = 'none';
+      nextBtn.style.display = 'none';
+
+      q.opcoes.forEach((opcao, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = opcao;
+        btn.className = 'btn-option';
+        btn.onclick = () => checkAnswer(index);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(index) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timer);
+      
+      const q = currentQuestions[currentQuestion];
+      const options = optionsEl.querySelectorAll('.btn-option');
+      
+      if (index === q.correta) {
+        // Resposta correta
+        options[index].classList.add('correct');
+        feedbackEl.textContent = getRandomCorrectFeedback();
+        feedbackEl.className = "feedback correct";
+        score++;
+        currentStreak++;
+        player.correctAnswers++;
+        
+        // Adiciona XP baseado na dificuldade
+        const xpGain = currentDifficulty === 'beginner' ? 10 : 
+                      currentDifficulty === 'intermediate' ? 20 : 30;
+        addXP(xpGain);
+        
+        // Atualiza progresso do nível
+        updateDifficultyProgress(1);
+        
+        // Verifica conquistas
+        checkAchievements(currentStreak);
+      } else {
+        // Resposta incorreta
+        options[index].classList.add('incorrect');
+        options[q.correta].classList.add('correct');
+        feedbackEl.textContent = getRandomIncorrectFeedback();
+        feedbackEl.className = "feedback incorrect";
+        currentStreak = 0;
+        loseLife();
+      }
+      
+      explanationEl.textContent = q.explicacao;
+      explanationEl.style.display = 'block';
+      showRandomTip();
+      scoreEl.textContent = score;
+      
+      if (lives > 0) {
+        nextBtn.style.display = 'inline-block';
+      } else {
+        setTimeout(() => {
+          endGame();
+        }, 2000);
+      }
+    }
+
+    function updateDifficultyProgress(points) {
+      if (currentDifficulty === 'beginner') {
+        player.beginnerProgress = Math.min(100, player.beginnerProgress + (100 / currentQuestions.length));
+      } else if (currentDifficulty === 'intermediate') {
+        player.intermediateProgress = Math.min(100, player.intermediateProgress + (100 / currentQuestions.length));
+      } else {
+        player.advancedProgress = Math.min(100, player.advancedProgress + (100 / currentQuestions.length));
+      }
+      updateProfile();
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < currentQuestions.length) {
+        showQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      // Verifica conquistas finais
+      checkAchievements(currentStreak, score, currentQuestions.length);
+      
+      // Mostra resultado
+      const resultMessage = `🎉 Fim do jogo!\n\nVocê acertou ${score} de ${currentQuestions.length} perguntas!\n\nGanhou ${score * (currentDifficulty === 'beginner' ? 10 : currentDifficulty === 'intermediate' ? 20 : 30)} XP`;
+      
+      setTimeout(() => {
+        alert(resultMessage);
+        showStartScreen();
+      }, 1000);
+    }
+
+    function showStartScreen() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('profile-screen').style.display = 'none';
+      document.getElementById('achievements-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+
+    function showProfile() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('achievements-screen').style.display = 'none';
+      document.getElementById('profile-screen').style.display = 'block';
+    }
+
+    function showAchievements() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('profile-screen').style.display = 'none';
+      document.getElementById('achievements-screen').style.display = 'block';
+    }
+
+    // Funções auxiliares (timer, feedback, etc.) mantidas da versão anterior
+    function startTimer() {
+      updateTimerDisplay();
+      timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0 && !answered) {
+          clearInterval(timer);
+          timeUp();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      timerEl.textContent = `${timeLeft}s`;
+      timerEl.className = 'stat-value timer';
+      
+      if (timeLeft <= 3) {
+        timerEl.classList.add('danger');
+      } else if (timeLeft <= 5) {
+        timerEl.classList.add('warning');
+      }
+    }
+
+    function timeUp() {
+      loseLife();
+      feedbackEl.textContent = "⏰ Tempo esgotado!";
+      feedbackEl.className = "feedback incorrect";
+      
+      const q = currentQuestions[currentQuestion];
+      explanationEl.textContent = q.explicacao;
+      explanationEl.style.display = 'block';
+      showRandomTip();
+      
+      const options = optionsEl.querySelectorAll('.btn-option');
+      options[q.correta].classList.add('correct');
+      
+      nextBtn.style.display = lives > 0 ? 'inline-block' : 'none';
+      answered = true;
+      currentStreak = 0;
+    }
+
+    function loseLife() {
+      lives--;
+      updateLivesDisplay();
+      
+      if (lives <= 0) {
+        setTimeout(() => {
+          endGame();
+        }, 1500);
+      }
+    }
+
+    function updateLivesDisplay() {
+      const lifeIcons = livesContainer.querySelectorAll('.life');
+      lifeIcons.forEach((icon, index) => {
+        if (index >= lives) {
+          icon.classList.add('lost');
+        } else {
+          icon.classList.remove('lost');
+        }
+      });
+    }
+
+    function showRandomTip() {
+      if (Math.random() > 0.5) {
+        tipContent.textContent = tips[Math.floor(Math.random() * tips.length)];
+        tipContainer.style.display = 'block';
+      }
+    }
+
+    function getRandomCorrectFeedback() {
+      const feedbacks = [
+        "✅ Excelente! Você acertou!",
+        "✅ Parabéns! Resposta correta!",
+        "✅ Isso aí! Você sabe mesmo!",
+        "✅ Muito bem! Continue assim!"
+      ];
+      return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+    }
+
+    function getRandomIncorrectFeedback() {
+      const feedbacks = [
+        "❌ Ops! Não foi dessa vez...",
+        "❌ Resposta incorreta!",
+        "❌ Quase! Mas não é essa...",
+        "❌ Atenção! Não é essa opção."
+      ];
+      return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+    }
+
+    function showCelebration(message = "🎉 Parabéns!") {
+      celebrateEl.style.opacity = '1';
+      celebrateEl.textContent = message;
+      
+      for (let i = 0; i < 50; i++) {
+        createConfetti();
+      }
+      
+      setTimeout(() => {
+        celebrateEl.style.opacity = '0';
+      }, 2000);
+    }
+
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      celebrateEl.appendChild(confetti);
+      
+      const colors = ['#4361ee', '#3f37c9', '#4cc9f0', '#4895ef', '#560bad'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      confetti.style.backgroundColor = color;
+      confetti.style.left = Math.random() * 100 + 'vw';
+      
+      const animationDuration = Math.random() * 3 + 2;
+      confetti.style.animation = `fall ${animationDuration}s linear forwards`;
+      
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes fall {
+          to {
+            top: 100vh;
+            transform: rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      setTimeout(() => {
+        confetti.remove();
+        style.remove();
+      }, animationDuration * 1000);
+    }
+
+    function showMessage(message) {
+      alert(message);
+    }
+
+    function shuffleArray(array) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    }
+
+    // Inicializa mostrando a tela inicial
+    window.onload = function() {
+      showStartScreen();
+    };
+  </script>
+</body>
+</html>
