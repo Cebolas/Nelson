@@ -2,565 +2,1225 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Missão Bit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jogo da Escolha Certa – por Nelson Pedroso Norbach</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4caf50;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --info: #2196f3;
+      --easy: #4caf50;
+      --medium: #ff9800;
+      --hard: #f44336;
+      --beginner: #4caf50;
+      --intermediate: #ff9800;
+      --advanced: #f44336;
+    }
+    
+    body {
       margin: 0;
-      padding: 0;
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      background-attachment: fixed;
     }
 
-    body {
-      font-family: 'Courier New', monospace;
-      background: #000;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+      will-change: transform, opacity;
+      margin-bottom: 20px;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.8rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: 10px;
+      min-width: 200px;
+      will-change: transform;
+    }
+
+    .btn:hover {
+      background-color: var(--secondary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-option {
+      background-color: white;
+      color: var(--dark);
+      border: 2px solid var(--primary);
+      padding: 12px 20px;
+      transition: all 0.2s;
+      width: 100%;
+      text-align: left;
+      margin: 8px 0;
+      border-radius: 10px;
+      will-change: transform;
+    }
+
+    .btn-option:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateX(10px);
+    }
+
+    .btn-option.correct {
+      background-color: var(--success);
+      color: white;
+      border-color: var(--success);
+      animation: pulse 0.5s;
+    }
+
+    .btn-option.incorrect {
+      background-color: var(--danger);
+      color: white;
+      border-color: var(--danger);
+      animation: shake 0.5s;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin: 20px 0;
       overflow: hidden;
     }
 
-    #game-container {
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      transition: width 0.5s ease;
+      border-radius: 5px;
+    }
+
+    .question {
+      font-size: 1.4rem;
+      margin: 25px 0;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .feedback {
+      font-size: 1.2rem;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      animation: fadeIn 0.5s;
+    }
+
+    .feedback.correct {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--success);
+      border-left: 5px solid var(--success);
+    }
+
+    .feedback.incorrect {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+      border-left: 5px solid var(--danger);
+    }
+
+    .explanation {
+      font-size: 1.1rem;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: rgba(33, 150, 243, 0.1);
+      border-left: 5px solid var(--info);
+      border-radius: 0 10px 10px 0;
+      text-align: left;
+    }
+
+    .timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 50px;
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+
+    .timer.warning {
+      color: var(--warning);
+      animation: pulse 1s infinite;
+    }
+
+    .timer.danger {
+      color: var(--danger);
+      animation: pulse 0.5s infinite;
+    }
+
+    .celebrate {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      height: 100%;
+      font-size: 5rem;
+      opacity: 0;
+      transition: opacity 0.5s;
     }
 
-    canvas {
-      image-rendering: pixelated;
-      border: 4px solid #fff;
-      background-color: #222;
-    }
-
-    #hud {
+    .confetti {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px;
-      border: 2px solid #fff;
-      font-size: 16px;
-      border-radius: 8px;
-      display: none;
-      font-family: 'Courier New', monospace;
+      width: 10px;
+      height: 10px;
+      background-color: var(--primary);
+      opacity: 0;
+      will-change: transform, opacity;
     }
 
-    #hud span {
-      display: inline-block;
-      min-width: 40px;
-    }
-
-    #menu {
+    .creditos {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #666;
       text-align: center;
-      background: #000;
-      border: 4px solid #fff;
-      padding: 20px;
-      max-width: 500px;
-      box-shadow: 0 0 0 8px #000;
     }
 
-    .title {
-      font-size: 32px;
-      margin-bottom: 20px;
-      text-shadow: 3px 3px 0 #fff;
-      letter-spacing: 2px;
-      font-family: 'Courier New', monospace;
-    }
-
-    .description {
-      margin-bottom: 30px;
-      line-height: 1.5;
-      font-family: 'Courier New', monospace;
-    }
-
-    .menu-btn {
-      margin: 10px auto;
-      padding: 12px 24px;
-      font-size: 18px;
-      background-color: #000;
-      border: 2px solid #fff;
-      color: white;
-      cursor: pointer;
-      display: block;
-      width: 80%;
-      transition: all 0.2s;
-      font-family: 'Courier New', monospace;
-    }
-
-    .menu-btn:hover {
-      background-color: #fff;
-      color: #000;
-    }
-
-    #cutscene {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 20px;
-      border: 2px solid white;
-      display: none;
-      text-align: center;
-      max-width: 300px;
-      border-radius: 10px;
-      z-index: 10;
-      font-family: 'Courier New', monospace;
-    }
-
-    #timer {
-      margin-top: 5px;
-    }
-
-    .pixel-art {
-      image-rendering: pixelated;
-      image-rendering: -moz-crisp-edges;
-      image-rendering: crisp-edges;
-    }
-
-    .emoji-pixel {
-      font-size: 16px;
-      image-rendering: pixelated;
+    .emoji {
+      font-size: 1.5rem;
+      margin-right: 10px;
       vertical-align: middle;
+    }
+
+    .difficulty-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .easy {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--easy);
+    }
+
+    .medium {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--medium);
+    }
+
+    .hard {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--hard);
+    }
+
+    .beginner {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--beginner);
+    }
+
+    .intermediate {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: var(--intermediate);
+    }
+
+    .advanced {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--advanced);
+    }
+
+    .category-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .lives {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .life {
+      font-size: 1.5rem;
+      margin: 0 5px;
+      color: var(--danger);
+      transition: all 0.3s;
+    }
+
+    .life.lost {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+
+    .tip-container {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: rgba(76, 175, 80, 0.1);
+      border-left: 5px solid var(--success);
+      border-radius: 0 10px 10px 0;
+      text-align: left;
+      animation: fadeIn 0.5s;
+    }
+
+    .tip-title {
+      font-weight: bold;
+      color: var(--success);
+      margin-bottom: 5px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      background-color: rgba(67, 97, 238, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      margin: 5px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    #start-screen, #quiz-screen {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .question {
+        font-size: 1.2rem;
+      }
+      
+      .btn {
+        padding: 12px 20px;
+        min-width: 150px;
+      }
+      
+      .stats {
+        flex-direction: column;
+      }
+      
+      .stat {
+        margin-bottom: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="menu">
-    <h1 class="title">MISSÃO BIT</h1>
-    <p class="description">Você é o Bit, uma unidade digital determinada a evoluir até se tornar um poderoso Terabyte!<br><br>
-    Embarque nessa aventura cibernética, aprenda sobre informática e derrote o vírus final!</p>
-    <button id="modoHistoriaBtn" class="menu-btn">MODO HISTÓRIA</button>
-    <button id="modoInfinitoBtn" class="menu-btn">MODO DESAFIO INFINITO</button>
+
+  <div class="container" id="start-screen">
+    <h1>Segurança na Internet</h1>
+    <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 30px;">Bem-vindo ao Jogo da Escolha Certa! Aqui você vai aprender a se proteger na internet de maneira divertida e segura.</p>
+    <button class="btn" onclick="startGame()">
+      <span class="emoji">🎮</span> Começar Jogo
+    </button>
   </div>
 
-  <div id="hud">
-    <span class="emoji-pixel">❤️</span> Vidas: <span id="vidas">3</span><br />
-    <span class="emoji-pixel">🧮</span> Pontos: <span id="score">0</span><br />
-    <span class="emoji-pixel">🚀</span> Fase: <span id="fase">1</span><br />
-    <span class="emoji-pixel">⏱️</span> Tempo: <span id="timer">35</span>s
+  <div class="container" id="quiz-screen">
+    <h1>Segurança na Internet</h1>
+    
+    <div class="lives" id="lives-container">
+      <span class="life">❤️</span>
+      <span class="life">❤️</span>
+      <span class="life">❤️</span>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <span>Pergunta</span>
+        <span class="stat-value" id="question-count">1/10</span>
+      </div>
+      <div class="stat">
+        <span>Pontos</span>
+        <span class="stat-value" id="score">0</span>
+      </div>
+      <div class="stat">
+        <span>Tempo</span>
+        <span class="stat-value timer" id="timer">10s</span>
+      </div>
+    </div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <div id="category-tag" class="category-tag"></div>
+    <p class="question" id="question-text">Carregando pergunta...</p>
+    <div class="options" id="options-container"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explanation" id="explanation" style="display:none;"></div>
+    
+    <div class="tip-container" id="tip-container" style="display:none;">
+      <div class="tip-title">💡 Dica de Segurança</div>
+      <div id="tip-content"></div>
+    </div>
+    
+    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none; margin-top: 20px;">
+      <span class="emoji">➡️</span> Próxima Pergunta
+    </button>
   </div>
 
-  <div id="cutscene"></div>
-  <div id="game-container">
-    <canvas id="game" width="480" height="320" style="display: none;"></canvas>
-  </div>
+  <div class="celebrate" id="celebrate"></div>
+
+  <p class="creditos">&copy; 2025 – Desenvolvido por Nelson Pedroso Norbach. Todos os direitos reservados.</p>
 
   <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-    const menu = document.getElementById("menu");
-    const hud = document.getElementById("hud");
-    const timerDisplay = document.getElementById("timer");
-    const scoreDisplay = document.getElementById("score");
-    const faseDisplay = document.getElementById("fase");
-    const vidasDisplay = document.getElementById("vidas");
-    const cutsceneBox = document.getElementById("cutscene");
-    const gameContainer = document.getElementById("game-container");
-
-    const tileSize = 16;
-    let score = 0;
-    let faseAtual = 0;
-    let tempo = 35; // Aumentado para 35 segundos
-    let vidas = 3;
-    let cronometro;
-    let inimigos = [];
-    let pontosRestantes = 0;
-    let modoDesafio = false;
-    let recorde = localStorage.getItem("recorde") || 0;
-    let jogoPausado = false;
-
-    const fases = [];
-    const conceitos = [];
-
-    function mostrarCutscene(texto, callback) {
-      cutsceneBox.innerText = texto;
-      cutsceneBox.style.display = "block";
-      jogoPausado = true;
-      clearInterval(cronometro);
-      
-      setTimeout(() => {
-        cutsceneBox.style.display = "none";
-        jogoPausado = false;
-        // Reinicia o cronômetro
-        cronometro = setInterval(atualizarTempo, 1000);
-        if (callback) callback();
-      }, 4000);
-    }
-
-    function atualizarTempo() {
-      if (jogoPausado) return;
-      
-      tempo--;
-      timerDisplay.textContent = tempo;
-      moverInimigos();
-      if (tempo <= 0) perderVida("⏱️ Tempo esgotado!");
-    }
-
-    function mostrarConceito() {
-      const conceito = conceitos[faseAtual % conceitos.length];
-      jogoPausado = true;
-      clearInterval(cronometro);
-      
-      ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-      ctx.fillRect(canvas.width/2 - 150, canvas.height/2 - 30, 300, 60);
-      ctx.fillStyle = "#fff";
-      ctx.font = "14px 'Courier New'";
-      ctx.textAlign = "center";
-      
-      const palavras = conceito.split(" ");
-      let linha1 = "";
-      let linha2 = "";
-      
-      for (const palavra of palavras) {
-        if (linha1.length + palavra.length < 30) {
-          linha1 += palavra + " ";
-        } else {
-          linha2 += palavra + " ";
+    // Banco de perguntas organizado por nível
+    const quiz = {
+      beginner: [
+        { 
+          pergunta: "Você deve compartilhar sua senha com amigos?", 
+          opcoes: ["Sim", "Não", "Só com melhores amigos", "Depende do site"], 
+          correta: 1, 
+          explicacao: "Nunca compartilhe senhas, nem com amigos.", 
+          category: "Senhas"
+        },
+        { 
+          pergunta: "É seguro clicar em links de desconhecidos?", 
+          opcoes: ["Sim", "Não", "Somente em jogos", "Se estiver no WhatsApp"], 
+          correta: 1, 
+          explicacao: "Links desconhecidos podem conter vírus.", 
+          category: "Golpes"
+        },
+        { 
+          pergunta: "O que significa o cadeado verde na barra de endereços?", 
+          opcoes: ["Que o site é bonito", "Que a conexão é segura", "Que é um site oficial", "Que tem muitas imagens"], 
+          correta: 1, 
+          explicacao: "O cadeado verde indica que a conexão é criptografada e mais segura.", 
+          category: "Navegação"
+        },
+        { 
+          pergunta: "Qual é a melhor forma de criar uma senha forte?", 
+          opcoes: ["Usar sequências simples como 123456", "Usar informações pessoais como data de nascimento", "Combinar letras, números e símbolos", "Usar a mesma palavra com diferentes finais"], 
+          correta: 2, 
+          explicacao: "Senhas fortes combinam diferentes tipos de caracteres e não usam informações pessoais.", 
+          category: "Senhas"
+        },
+        { 
+          pergunta: "O que você deve fazer antes de baixar um aplicativo?", 
+          opcoes: ["Verificar as permissões que ele pede", "Baixar sempre o primeiro resultado", "Confiar em qualquer app com boa classificação", "Ignorar os comentários de outros usuários"], 
+          correta: 0, 
+          explicacao: "Sempre verifique as permissões e leia comentários antes de baixar aplicativos.", 
+          category: "Aplicativos"
+        },
+        { 
+          pergunta: "O que é phishing?", 
+          opcoes: ["Um tipo de pescaria", "Um vírus de computador", "Uma tentativa de roubar informações pessoais", "Um jogo online"], 
+          correta: 2, 
+          explicacao: "Phishing é quando criminosos tentam enganar você para obter informações pessoais.", 
+          category: "Golpes"
+        },
+        { 
+          pergunta: "O que fazer se receber uma mensagem pedindo dados pessoais?", 
+          opcoes: ["Responder imediatamente", "Ignorar e denunciar como spam", "Encaminhar para amigos", "Fornecer apenas alguns dados"], 
+          correta: 1, 
+          explicacao: "Nunca forneça dados pessoais por mensagem. Denuncie como spam.", 
+          category: "Privacidade"
+        },
+        { 
+          pergunta: "Por que é importante fazer logout de sites?", 
+          opcoes: ["Para economizar energia", "Para proteger sua conta caso outra pessoa use o dispositivo", "Porque o site pede", "Para ganhar pontos"], 
+          correta: 1, 
+          explicacao: "Fazer logout protege sua conta caso outra pessoa use o mesmo dispositivo.", 
+          category: "Navegação"
+        },
+        { 
+          pergunta: "O que são atualizações de segurança?", 
+          opcoes: ["Novos recursos para o dispositivo", "Correções para problemas de segurança", "Mudanças no design", "Aplicativos novos"], 
+          correta: 1, 
+          explicacao: "Atualizações de segurança corrigem falhas que criminosos podem explorar.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que fazer se suspeitar que sua conta foi invadida?", 
+          opcoes: ["Não fazer nada", "Mudar a senha imediatamente", "Contar para amigos", "Criar outra conta igual"], 
+          correta: 1, 
+          explicacao: "Se suspeitar de invasão, mude sua senha imediatamente e verifique atividades suspeitas.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "Por que não devemos usar redes Wi-Fi públicas para transações bancárias?", 
+          opcoes: ["Porque são lentas", "Porque podem ser monitoradas por criminosos", "Porque os bancos não permitem", "Porque consomem mais bateria"], 
+          correta: 1, 
+          explicacao: "Redes públicas podem ser inseguras e permitir que criminosos capturem seus dados.", 
+          category: "Redes"
+        },
+        { 
+          pergunta: "O que é um vírus de computador?", 
+          opcoes: ["Um programa útil", "Um jogo divertido", "Um programa malicioso que pode danificar seu dispositivo", "Um tipo de arquivo"], 
+          correta: 2, 
+          explicacao: "Vírus são programas maliciosos que podem danificar dispositivos ou roubar informações.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "Qual é a função de um antivírus?", 
+          opcoes: ["Acelerar o computador", "Proteger contra programas maliciosos", "Melhorar a conexão com a internet", "Organizar arquivos"], 
+          correta: 1, 
+          explicacao: "Antivírus protegem seu dispositivo detectando e removendo programas maliciosos.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "Por que não devemos postar fotos de documentos pessoais nas redes sociais?", 
+          opcoes: ["Porque ocupam muito espaço", "Porque podem ser usados para falsificação", "Porque os documentos ficam desatualizados", "Porque não são interessantes"], 
+          correta: 1, 
+          explicacao: "Documentos pessoais podem ser usados por criminosos para roubo de identidade.", 
+          category: "Privacidade"
+        },
+        { 
+          pergunta: "O que significa HTTPS em um endereço web?", 
+          opcoes: ["Que o site é moderno", "Que a conexão é segura e criptografada", "Que o site tem muitas imagens", "Que é um site oficial"], 
+          correta: 1, 
+          explicacao: "HTTPS indica que a comunicação com o site é criptografada e mais segura.", 
+          category: "Navegação"
         }
-      }
-      
-      ctx.fillText(linha1.trim(), canvas.width/2, canvas.height/2 - 5);
-      if (linha2) {
-        ctx.fillText(linha2.trim(), canvas.width/2, canvas.height/2 + 15);
-      }
-      
-      setTimeout(() => {
-        jogoPausado = false;
-        desenharMapa();
-        // Reinicia o cronômetro
-        cronometro = setInterval(atualizarTempo, 1000);
-      }, 3000);
-    }
-
-    function gerarFaseAleatoria() {
-      const linha = "#######################";
-      const mapa = [linha];
-      
-      for (let y = 1; y < 18; y++) {
-        let l = "#";
-        for (let x = 1; x < 22; x++) {
-          if ((x <= 3 && y <= 3)) {
-            l += " ";
-          } else {
-            l += Math.random() < 0.08 ? "#" : " ";
-          }
+      ],
+      intermediate: [
+        { 
+          pergunta: "O que fazer se receber um e-mail pedindo para atualizar seus dados bancários?", 
+          opcoes: ["Clicar no link e atualizar", "Responder com seus dados", "Ignorar e reportar como phishing", "Encaminhar para amigos"], 
+          correta: 2, 
+          explicacao: "Bancos nunca pedem dados por e-mail. Isso é phishing.", 
+          category: "Golpes",
+          situacional: true
+        },
+        { 
+          pergunta: "Qual a melhor prática para senhas em diferentes sites?", 
+          opcoes: ["Usar a mesma senha em tudo", "Usar senhas únicas para cada site", "Anotar todas em um papel", "Usar combinações simples"], 
+          correta: 1, 
+          explicacao: "Use senhas únicas para cada site. Considere um gerenciador de senhas.", 
+          category: "Senhas"
+        },
+        { 
+          pergunta: "O que é autenticação de dois fatores (2FA)?", 
+          opcoes: ["Usar duas senhas", "Confirmar login com código por SMS/app", "Ter duas contas", "Usar senha e nome de usuário"], 
+          correta: 1, 
+          explicacao: "2FA adiciona uma camada extra de segurança com um código temporário.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "Como identificar um e-mail de phishing?", 
+          opcoes: [
+            "Verificar o endereço do remetente", 
+            "Procurar erros gramaticais", 
+            "Não clicar em links suspeitos", 
+            "Todas as anteriores"
+          ], 
+          correta: 3, 
+          explicacao: "Phishing pode ser identificado por remetentes estranhos, erros gramaticais e links suspeitos.", 
+          category: "Golpes"
+        },
+        { 
+          pergunta: "O que é engenharia social?", 
+          opcoes: [
+            "Uma técnica de construção", 
+            "Manipulação psicológica para obter informações", 
+            "Um tipo de rede social", 
+            "Um curso universitário"
+          ], 
+          correta: 1, 
+          explicacao: "Engenharia social é quando criminosos manipulam pessoas para obter informações confidenciais.", 
+          category: "Golpes"
+        },
+        { 
+          pergunta: "Por que é arriscado usar pen drives desconhecidos?", 
+          opcoes: [
+            "Podem conter vírus", 
+            "Podem quebrar facilmente", 
+            "Podem ser lentos", 
+            "Podem não ser compatíveis"
+          ], 
+          correta: 0, 
+          explicacao: "Pen drives desconhecidos podem conter malware que infecta seu dispositivo.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é um ataque de força bruta?", 
+          opcoes: [
+            "Tentar muitas combinações para adivinhar uma senha", 
+            "Quebrar fisicamente um dispositivo", 
+            "Ataque com vírus muito potente", 
+            "Hackear usando supercomputadores"
+          ], 
+          correta: 0, 
+          explicacao: "Ataques de força bruta testam muitas combinações até adivinhar a senha.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "Qual a vantagem de usar um gerenciador de senhas?", 
+          opcoes: [
+            "Permite usar senhas complexas sem precisar lembrar", 
+            "Torna todas as senhas iguais", 
+            "Compartilha senhas automaticamente", 
+            "Nenhuma vantagem"
+          ], 
+          correta: 0, 
+          explicacao: "Gerenciadores permitem usar senhas únicas e complexas para cada site, armazenando-as com segurança.", 
+          category: "Senhas"
+        },
+        { 
+          pergunta: "O que é um token de segurança?", 
+          opcoes: [
+            "Um dispositivo físico que gera códigos únicos", 
+            "Um tipo de senha longa", 
+            "Um certificado digital", 
+            "Um aplicativo de mensagens"
+          ], 
+          correta: 0, 
+          explicacao: "Tokens geram códigos únicos temporários para autenticação em dois fatores.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é criptografia de dados?", 
+          opcoes: [
+            "Transformar informações em código ilegível sem a chave", 
+            "Comprimir arquivos para ocupar menos espaço", 
+            "Esconder arquivos em pastas secretas", 
+            "Proteger arquivos com senha"
+          ], 
+          correta: 0, 
+          explicacao: "Criptografia transforma dados em código que só pode ser lido com a chave correta.", 
+          category: "Privacidade"
+        },
+        { 
+          pergunta: "Por que é importante verificar permissões de aplicativos?", 
+          opcoes: [
+            "Para saber quanto espaço ocupam", 
+            "Para evitar que acessem dados desnecessários", 
+            "Porque alguns apps não funcionam sem todas as permissões", 
+            "Para ganhar recompensas"
+          ], 
+          correta: 1, 
+          explicacao: "Apps podem coletar dados desnecessários se tiverem permissões excessivas.", 
+          category: "Aplicativos"
+        },
+        { 
+          pergunta: "O que é um ataque DDoS?", 
+          opcoes: [
+            "Inundar um servidor com tráfego para derrubá-lo", 
+            "Roubar dados de um computador", 
+            "Infectar dispositivos com vírus", 
+            "Enganar usuários para obter senhas"
+          ], 
+          correta: 0, 
+          explicacao: "Ataques DDoS sobrecarregam servidores com tráfego excessivo para tirá-los do ar.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é um certificado digital?", 
+          opcoes: [
+            "Um documento que prova identidade online", 
+            "Um diploma de curso de informática", 
+            "Um tipo de senha complexa", 
+            "Um prêmio por usar a internet com segurança"
+          ], 
+          correta: 0, 
+          explicacao: "Certificados digitais autenticam a identidade de pessoas ou sites na internet.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "Por que é importante fazer backup dos dados?", 
+          opcoes: [
+            "Para evitar perda em caso de ataque ou falha", 
+            "Para liberar espaço no dispositivo", 
+            "Porque é obrigatório", 
+            "Para poder formatar o computador"
+          ], 
+          correta: 0, 
+          explicacao: "Backups protegem seus dados contra perda por ataques, falhas ou acidentes.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é um keylogger?", 
+          opcoes: [
+            "Dispositivo para digitar mais rápido", 
+            "Programa que registra tudo o que é digitado", 
+            "Aplicativo para organizar senhas", 
+            "Tipo de teclado especial"
+          ], 
+          correta: 1, 
+          explicacao: "Keyloggers são programas maliciosos que gravam tudo o que você digita, incluindo senhas.", 
+          category: "Segurança"
         }
-        l += "#";
-        mapa.push(l);
-      }
-      mapa.push(linha);
-      
-      let mapArray = mapa.map(row => row.split(""));
-      mapArray[1][1] = "@";
-      
-      for (let j = 0; j < 8; j++) {
-        const rx = 2 + Math.floor(Math.random() * 20);
-        const ry = 2 + Math.floor(Math.random() * 16);
-        if (mapArray[ry][rx] === " ") mapArray[ry][rx] = ".";
-      }
-      
-      for (let j = 0; j < 3; j++) {
-        const rx = 2 + Math.floor(Math.random() * 20);
-        const ry = 2 + Math.floor(Math.random() * 16);
-        if (mapArray[ry][rx] === " ") mapArray[ry][rx] = "V";
-      }
-      
-      return mapArray.map(row => row.join(""));
-    }
-
-    for (let i = 0; i < 50; i++) {
-      let faseValida = false;
-      while (!faseValida) {
-        const fase = gerarFaseAleatoria();
-        if (verificarCaminhoLivre(fase)) {
-          fases.push(fase);
-          faseValida = true;
+      ],
+      advanced: [
+        { 
+          pergunta: "Como identificar uma rede Wi-Fi falsa em locais públicos?", 
+          opcoes: [
+            "Pelo nome parecido com o estabelecimento", 
+            "Por não pedir senha", 
+            "Por ter sinal muito forte", 
+            "Todas as anteriores"
+          ], 
+          correta: 3, 
+          explicacao: "Redes falsas podem imitar nomes, oferecer acesso fácil e sinal forte para atrair vítimas.", 
+          category: "Redes",
+          situacional: true
+        },
+        { 
+          pergunta: "O que fazer se suspeitar que seu dispositivo tem malware?", 
+          opcoes: [
+            "Formatar imediatamente", 
+            "Rodar antivírus e mudar senhas importantes", 
+            "Ignorar e continuar usando", 
+            "Vender o dispositivo"
+          ], 
+          correta: 1, 
+          explicacao: "Execute uma verificação completa, mude senhas e monitore contas.", 
+          category: "Segurança",
+          situacional: true
+        },
+        { 
+          pergunta: "Qual a vantagem de usar uma VPN em redes públicas?", 
+          opcoes: [
+            "Deixa a internet mais rápida", 
+            "Criptografa toda sua comunicação", 
+            "Permite acessar sites bloqueados", 
+            "Todas as anteriores"
+          ], 
+          correta: 1, 
+          explicacao: "VPNs criam um túnel criptografado, protegendo seus dados em redes não confiáveis.", 
+          category: "Privacidade"
+        },
+        { 
+          pergunta: "O que é um ataque Man-in-the-Middle?", 
+          opcoes: [
+            "Quando um criminoso intercepta comunicação entre duas partes", 
+            "Ataque que sobrecarrega um servidor", 
+            "Vírus que se espalha por e-mail", 
+            "Falsificação de identidade online"
+          ], 
+          correta: 0, 
+          explicacao: "Neste ataque, o criminoso intercepta e possivelmente altera a comunicação entre vítimas.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é engenharia reversa de malware?", 
+          opcoes: [
+            "Criar novos vírus", 
+            "Analisar malware para entender seu funcionamento", 
+            "Desinstalar programas maliciosos", 
+            "Reverter danos causados por vírus"
+          ], 
+          correta: 1, 
+          explicacao: "Engenharia reversa de malware ajuda a entender como ele funciona para desenvolver proteções.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é um ataque de dia zero?", 
+          opcoes: [
+            "Ataque que ocorre à meia-noite", 
+            "Exploração de vulnerabilidade desconhecida antes do patch", 
+            "Primeiro ataque de um novo hacker", 
+            "Ataque que dura 24 horas"
+          ], 
+          correta: 1, 
+          explicacao: "Ataques de dia zero exploram falhas desconhecidas pelos desenvolvedores, antes que possam ser corrigidas.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é um honeypot em segurança digital?", 
+          opcoes: [
+            "Armadilha para atrair e estudar hackers", 
+            "Tipo de vírus muito atraente", 
+            "Rede social falsa", 
+            "Programa que simula vulnerabilidades"
+          ], 
+          correta: 0, 
+          explicacao: "Honeypots são sistemas projetados para atrair e monitorar atividades de invasores.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é steganografia?", 
+          opcoes: [
+            "Esconder informações dentro de outros arquivos", 
+            "Tipo de criptografia avançada", 
+            "Técnica para apagar dados permanentemente", 
+            "Método de backup em nuvem"
+          ], 
+          correta: 0, 
+          explicacao: "Steganografia esconde informações dentro de imagens, áudios ou outros arquivos sem alterar sua aparência.", 
+          category: "Privacidade"
+        },
+        { 
+          pergunta: "O que é um falso positivo em antivírus?", 
+          opcoes: [
+            "Quando o antivírus não detecta uma ameaça", 
+            "Quando detecta um arquivo seguro como malicioso", 
+            "Quando o vírus engana o antivírus", 
+            "Quando o antivírus funciona corretamente"
+          ], 
+          correta: 1, 
+          explicacao: "Falso positivo ocorre quando o antivírus identifica erroneamente um arquivo seguro como ameaça.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é sandboxing em segurança digital?", 
+          opcoes: [
+            "Executar programas em ambiente isolado para análise", 
+            "Tipo de armazenamento em nuvem", 
+            "Método para apagar dados", 
+            "Técnica de criptografia"
+          ], 
+          correta: 0, 
+          explicacao: "Sandboxing executa programas em ambiente controlado e isolado para analisar comportamento suspeito.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é um ataque de negação de serviço distribuído (DDoS)?", 
+          opcoes: [
+            "Ataque que usa muitos dispositivos para sobrecarregar um alvo", 
+            "Ataque que rouba dados distribuídos", 
+            "Vírus que se espalha rapidamente", 
+            "Ataque que nega acesso a serviços específicos"
+          ], 
+          correta: 0, 
+          explicacao: "DDoS usa uma rede de dispositivos comprometidos (botnet) para sobrecarregar um alvo com tráfego.", 
+          category: "Segurança"
+        },
+        { 
+          pergunta: "O que é deep web?", 
+          opcoes: [
+            "Parte da internet não indexada por motores de busca", 
+            "Internet ilegal", 
+            "Rede de computadores secretos", 
+            "Tecnologia de navegação anônima"
+          ], 
+          correta: 0, 
+          explicacao: "Deep web inclui todo conteúdo não indexado por buscadores, como bancos de dados privados.", 
+          category: "Navegação"
+        },
+        { 
+          pergunta: "O que é dark web?", 
+          opcoes: [
+            "Parte da deep web que requer softwares específicos para acesso", 
+            "Internet noturna", 
+            "Rede de computadores sem luz", 
+            "Tipo de vírus"
+          ], 
+          correta: 0, 
+          explicacao: "Dark web é pequena parte da deep web que requer ferramentas como Tor para acesso anônimo.", 
+          category: "Navegação"
+        },
+        { 
+          pergunta: "O que é criptografia de ponta a ponta?", 
+          opcoes: [
+            "Criptografia que só pode ser decifrada pelos comunicantes", 
+            "Criptografia que usa pontas de chaves", 
+            "Tipo de criptografia mais forte", 
+            "Criptografia que dura pouco tempo"
+          ], 
+          correta: 0, 
+          explicacao: "Na criptografia ponta a ponta, só os participantes da comunicação podem ler as mensagens.", 
+          category: "Privacidade"
+        },
+        { 
+          pergunta: "O que é um ataque de força bruta offline?", 
+          opcoes: [
+            "Tentar senhas em um banco de dados roubado", 
+            "Quebrar fisicamente um dispositivo", 
+            "Ataque sem conexão à internet", 
+            "Tentativa de senha em um site"
+          ], 
+          correta: 0, 
+          explicacao: "Ataques offline testam combinações em um banco de dados de senhas roubado, sem restrições de tentativas.", 
+          category: "Segurança"
         }
-      }
-    }
+      ]
+    };
 
-    function verificarCaminhoLivre(fase) {
-      const mapa = fase.map(linha => linha.split(""));
-      const visitados = Array(mapa.length).fill().map(() => Array(mapa[0].length).fill(false));
-      const fila = [{x: 1, y: 1}];
-      let pontosAcessiveis = 0;
-      
-      while (fila.length > 0) {
-        const atual = fila.shift();
-        if (visitados[atual.y][atual.x]) continue;
-        
-        visitados[atual.y][atual.x] = true;
-        
-        if (mapa[atual.y][atual.x] === ".") pontosAcessiveis++;
-        
-        const direcoes = [
-          {dx: 1, dy: 0}, {dx: -1, dy: 0}, 
-          {dx: 0, dy: 1}, {dx: 0, dy: -1}
-        ];
-        
-        for (const dir of direcoes) {
-          const nx = atual.x + dir.dx;
-          const ny = atual.y + dir.dy;
-          
-          if (nx >= 0 && nx < mapa[0].length && 
-              ny >= 0 && ny < mapa.length && 
-              mapa[ny][nx] !== "#" && !visitados[ny][nx]) {
-            fila.push({x: nx, y: ny});
-          }
-        }
-      }
-      
-      const totalPontos = fase.join("").split(".").length - 1;
-      return pontosAcessiveis >= Math.ceil(totalPontos * 0.5);
-    }
-
-    const conceitosBase = [
-      "Bit é a menor unidade de informação.",
-      "Byte é um grupo de 8 bits.",
-      "Hardware é a parte física do computador.",
-      "Software é o que faz o hardware funcionar.",
-      "O processador executa instruções.",
-      "Memória RAM é onde os dados são armazenados temporariamente.",
-      "Sistema Operacional gerencia os recursos do computador.",
-      "Rede conecta computadores para compartilhar dados."
+    // Dicas de segurança
+    const tips = [
+      "Nunca use a mesma senha em múltiplos sites! Se um site for invadido, todas suas contas estarão em risco.",
+      "Ative a autenticação em dois fatores sempre que possível. Isso adiciona uma camada extra de segurança.",
+      "Cuidado com redes Wi-Fi públicas. Evite acessar contas importantes em redes não confiáveis.",
+      "Mantenha seus dispositivos e aplicativos sempre atualizados. Atualizações frequentemente corrigem falhas de segurança.",
+      "Faça backup regular dos seus dados importantes. Assim você não perde tudo se for vítima de ransomware."
     ];
-    conceitos.push(...conceitosBase);
 
-    let mapa = [];
-    let player = { x: 0, y: 0 };
+    // Variáveis do jogo
+    let currentQuestion = 0;
+    let score = 0;
+    let timer;
+    let timeLeft = 10;
+    let answered = false;
+    let lives = 3;
+    let currentQuestions = [];
+    let currentDifficulty = 'beginner';
 
-    function carregarFase(n) {
-      if (modoDesafio && n >= fases.length) {
-        let faseValida = false;
-        while (!faseValida) {
-          const fase = gerarFaseAleatoria();
-          if (verificarCaminhoLivre(fase)) {
-            fases.push(fase);
-            faseValida = true;
-          }
-        }
+    // Elementos do DOM
+    const questionEl = document.getElementById('question-text');
+    const optionsEl = document.getElementById('options-container');
+    const feedbackEl = document.getElementById('feedback');
+    const explanationEl = document.getElementById('explanation');
+    const nextBtn = document.getElementById('next-btn');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer');
+    const questionCountEl = document.getElementById('question-count');
+    const progressBarEl = document.getElementById('progress-bar');
+    const celebrateEl = document.getElementById('celebrate');
+    const livesContainer = document.getElementById('lives-container');
+    const categoryTag = document.getElementById('category-tag');
+    const tipContainer = document.getElementById('tip-container');
+    const tipContent = document.getElementById('tip-content');
+
+    // Inicialização
+    function startGame() {
+      currentDifficulty = 'beginner';
+      currentQuestions = selectQuestions(currentDifficulty);
+      
+      // Reinicia variáveis da sessão
+      currentQuestion = 0;
+      score = 0;
+      lives = 3;
+      
+      // Atualiza UI
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      updateLivesDisplay();
+      showQuestion();
+    }
+
+    function selectQuestions(difficulty) {
+      // Seleciona 10 perguntas aleatórias do nível atual
+      const questions = [...quiz[difficulty]];
+      return shuffleArray(questions).slice(0, 10);
+    }
+
+    function showQuestion() {
+      answered = false;
+      clearInterval(timer);
+      
+      const q = currentQuestions[currentQuestion];
+      timeLeft = q.situacional ? 20 : 10;
+      startTimer();
+      
+      questionEl.textContent = q.pergunta;
+      questionCountEl.textContent = `${currentQuestion + 1}/${currentQuestions.length}`;
+      progressBarEl.style.width = `${((currentQuestion) / currentQuestions.length) * 100}%`;
+      
+      // Mostra categoria
+      categoryTag.textContent = q.category;
+      categoryTag.style.display = 'inline-block';
+      
+      optionsEl.innerHTML = '';
+      feedbackEl.textContent = '';
+      feedbackEl.className = 'feedback';
+      explanationEl.style.display = 'none';
+      tipContainer.style.display = 'none';
+      nextBtn.style.display = 'none';
+
+      q.opcoes.forEach((opcao, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = opcao;
+        btn.className = 'btn-option';
+        btn.onclick = () => checkAnswer(index);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(index) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timer);
+      
+      const q = currentQuestions[currentQuestion];
+      const options = optionsEl.querySelectorAll('.btn-option');
+      
+      if (index === q.correta) {
+        // Resposta correta
+        options[index].classList.add('correct');
+        feedbackEl.textContent = getRandomCorrectFeedback();
+        feedbackEl.className = "feedback correct";
+        score++;
+      } else {
+        // Resposta incorreta
+        options[index].classList.add('incorrect');
+        options[q.correta].classList.add('correct');
+        feedbackEl.textContent = getRandomIncorrectFeedback();
+        feedbackEl.className = "feedback incorrect";
+        loseLife();
       }
       
-      mapa = fases[n].map(linha => linha.split(""));
-      inimigos = [];
-      pontosRestantes = 0;
+      explanationEl.textContent = q.explicacao;
+      explanationEl.style.display = 'block';
+      showRandomTip();
+      scoreEl.textContent = score;
       
-      for (let y = 0; y < mapa.length; y++) {
-        for (let x = 0; x < mapa[y].length; x++) {
-          if (mapa[y][x] === "@") {
-            player.x = x;
-            player.y = y;
-            mapa[y][x] = " ";
-          }
-          if (mapa[y][x] === ".") pontosRestantes++;
-          if (mapa[y][x] === "V") inimigos.push({ x, y, dx: Math.random() > 0.5 ? 1 : -1 });
-        }
-      }
-      
-      tempo = 35; // Definido para 35 segundos
-      timerDisplay.textContent = tempo;
-      faseDisplay.textContent = n + 1;
-      vidasDisplay.textContent = vidas;
-      
-      clearInterval(cronometro);
-      cronometro = setInterval(atualizarTempo, 1000);
-      
-      desenharMapa();
-      
-      // Mostra conceito a cada 3 níveis
-      if ((n + 1) % 3 === 0) {
-        setTimeout(mostrarConceito, 500);
+      if (lives > 0) {
+        nextBtn.style.display = 'inline-block';
+      } else {
+        setTimeout(() => {
+          endGame();
+        }, 2000);
       }
     }
 
-    function desenharMapa() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Fundo
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Desenha o mapa
-      for (let y = 0; y < mapa.length; y++) {
-        for (let x = 0; x < mapa[y].length; x++) {
-          // Paredes (branco)
-          if (mapa[y][x] === "#") {
-            ctx.fillStyle = "#fff";
-            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-          } 
-          // Pontos (amarelos e maiores)
-          else if (mapa[y][x] === ".") {
-            ctx.fillStyle = "#ffff00";
-            ctx.beginPath();
-            ctx.arc(
-              x * tileSize + tileSize/2, 
-              y * tileSize + tileSize/2, 
-              tileSize/3, 0, Math.PI * 2
-            );
-            ctx.fill();
-          } 
-          // Portal (verde)
-          else if (mapa[y][x] === "X") {
-            ctx.fillStyle = "#00ff00";
-            ctx.beginPath();
-            ctx.arc(
-              x * tileSize + tileSize/2, 
-              y * tileSize + tileSize/2, 
-              tileSize/2, 0, Math.PI * 2
-            );
-            ctx.fill();
-          } 
-          // Inimigos (vermelhos - apenas os móveis)
-          else if (mapa[y][x] === "V") {
-            ctx.fillStyle = "#ff0000";
-            ctx.beginPath();
-            ctx.moveTo(x * tileSize + tileSize/2, y * tileSize);
-            ctx.lineTo(x * tileSize + tileSize, y * tileSize + tileSize);
-            ctx.lineTo(x * tileSize, y * tileSize + tileSize);
-            ctx.closePath();
-            ctx.fill();
-          }
-        }
-      }
-      
-      // Desenha o jogador (branco)
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(
-        player.x * tileSize + tileSize/4, 
-        player.y * tileSize + tileSize/4, 
-        tileSize/2, tileSize/2
-      );
-    }
-
-    function mover(dx, dy) {
-      if (jogoPausado) return;
-      
-      const nx = player.x + dx;
-      const ny = player.y + dy;
-      
-      if (nx < 0 || nx >= mapa[0].length || ny < 0 || ny >= mapa.length) {
-        return;
-      }
-      
-      const destino = mapa[ny][nx];
-      
-      if (destino !== "#") {
-        for (const inimigo of inimigos) {
-          if (inimigo.x === nx && inimigo.y === ny) {
-            perderVida("☠️ Você foi atingido por um vírus!");
-            return;
-          }
-        }
-        
-        player.x = nx;
-        player.y = ny;
-        
-        if (destino === ".") {
-          score++;
-          pontosRestantes--;
-          mapa[ny][nx] = " ";
-          scoreDisplay.textContent = score;
-          
-          if (pontosRestantes === 0) {
-            mapa[mapa.length - 2][mapa[0].length - 2] = "X";
-          }
-        }
-        
-        if (destino === "X") {
-          if ((faseAtual + 1) % 10 === 0) {
-            mostrarCutscene("✅ Checkpoint salvo!");
-          }
-          if ([10, 20, 30, 40, 50].includes(faseAtual + 1)) {
-            mostrarCutscene("🔄 Bit evoluiu para o próximo nível!");
-          }
-          faseAtual++;
-          carregarFase(faseAtual);
-        }
-        
-        desenharMapa();
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < currentQuestions.length) {
+        showQuestion();
+      } else {
+        endGame();
       }
     }
 
-    function moverInimigos() {
-      if (jogoPausado) return;
+    function endGame() {
+      // Mostra resultado
+      const resultMessage = `🎉 Fim do jogo!\n\nVocê acertou ${score} de ${currentQuestions.length} perguntas!`;
       
-      for (let v of inimigos) {
-        if (mapa[v.y][v.x] === "V") mapa[v.y][v.x] = " ";
-        
-        const novaX = v.x + v.dx;
-        
-       if (novaX <= 0 || novaX >= mapa[0].length - 1 || 
-    mapa[v.y][novaX] === "#" || mapa[v.y][novaX] === "." || mapa[v.y][novaX] === "X") {
-  v.dx *= -1;
-} else {
-  v.x = novaX;
-}
-        
-        if (v.x === player.x && v.y === player.y) {
-          perderVida("☠️ Você foi atingido por um vírus!");
-          return;
+      setTimeout(() => {
+        alert(resultMessage);
+        showStartScreen();
+      }, 1000);
+    }
+
+    function showStartScreen() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+
+    // Funções auxiliares (timer, feedback, etc.)
+    function startTimer() {
+      updateTimerDisplay();
+      timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0 && !answered) {
+          clearInterval(timer);
+          timeUp();
         }
-        
-        mapa[v.y][v.x] = "V";
-      }
-      
-      desenharMapa();
+      }, 1000);
     }
 
-    function perderVida(msg) {
-      vidas--;
-      mostrarCutscene(msg);
+    function updateTimerDisplay() {
+      timerEl.textContent = `${timeLeft}s`;
+      timerEl.className = 'stat-value timer';
       
-      if (vidas <= 0) {
-        mostrarCutscene("😭 Suas vidas acabaram! Reiniciando do começo.");
-        faseAtual = 0;
-        score = 0;
-        vidas = 3;
+      if (timeLeft <= 3) {
+        timerEl.classList.add('danger');
+      } else if (timeLeft <= 5) {
+        timerEl.classList.add('warning');
       }
-      
-      if (modoDesafio && score > recorde) {
-        recorde = score;
-        localStorage.setItem("recorde", recorde);
-      }
-      
-      carregarFase(faseAtual);
     }
 
-    window.addEventListener("keydown", (e) => {
-      if (menu.style.display === "none" && !jogoPausado) {
-        if (e.key === "ArrowUp") mover(0, -1);
-        if (e.key === "ArrowDown") mover(0, 1);
-        if (e.key === "ArrowLeft") mover(-1, 0);
-        if (e.key === "ArrowRight") mover(1, 0);
+    function timeUp() {
+      loseLife();
+      feedbackEl.textContent = "⏰ Tempo esgotado!";
+      feedbackEl.className = "feedback incorrect";
+      
+      const q = currentQuestions[currentQuestion];
+      explanationEl.textContent = q.explicacao;
+      explanationEl.style.display = 'block';
+      showRandomTip();
+      
+      const options = optionsEl.querySelectorAll('.btn-option');
+      options[q.correta].classList.add('correct');
+      
+      nextBtn.style.display = lives > 0 ? 'inline-block' : 'none';
+      answered = true;
+    }
+
+    function loseLife() {
+      lives--;
+      updateLivesDisplay();
+      
+      if (lives <= 0) {
+        setTimeout(() => {
+          endGame();
+        }, 1500);
       }
-    });
+    }
 
-    document.getElementById("modoHistoriaBtn").addEventListener("click", () => {
-      modoDesafio = false;
-      menu.style.display = "none";
-      hud.style.display = "block";
-      canvas.style.display = "block";
-      carregarFase(0);
-    });
+    function updateLivesDisplay() {
+      const lifeIcons = livesContainer.querySelectorAll('.life');
+      lifeIcons.forEach((icon, index) => {
+        if (index >= lives) {
+          icon.classList.add('lost');
+        } else {
+          icon.classList.remove('lost');
+        }
+      });
+    }
 
-    document.getElementById("modoInfinitoBtn").addEventListener("click", () => {
-      modoDesafio = true;
-      menu.style.display = "none";
-      hud.style.display = "block";
-      canvas.style.display = "block";
-      carregarFase(0);
-    });
+    function showRandomTip() {
+      if (Math.random() > 0.5) {
+        tipContent.textContent = tips[Math.floor(Math.random() * tips.length)];
+        tipContainer.style.display = 'block';
+      }
+    }
 
-    // Inicializa o HUD e canvas como ocultos
-    hud.style.display = "none";
-    canvas.style.display = "none";
+    function getRandomCorrectFeedback() {
+      const feedbacks = [
+        "✅ Excelente! Você acertou!",
+        "✅ Parabéns! Resposta correta!",
+        "✅ Isso aí! Você sabe mesmo!",
+        "✅ Muito bem! Continue assim!"
+      ];
+      return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+    }
+
+    function getRandomIncorrectFeedback() {
+      const feedbacks = [
+        "❌ Ops! Não foi dessa vez...",
+        "❌ Resposta incorreta!",
+        "❌ Quase! Mas não é essa...",
+        "❌ Atenção! Não é essa opção."
+      ];
+      return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+    }
+
+    function showCelebration(message = "🎉 Parabéns!") {
+      celebrateEl.style.opacity = '1';
+      celebrateEl.textContent = message;
+      
+      for (let i = 0; i < 50; i++) {
+        createConfetti();
+      }
+      
+      setTimeout(() => {
+        celebrateEl.style.opacity = '0';
+      }, 2000);
+    }
+
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      celebrateEl.appendChild(confetti);
+      
+      const colors = ['#4361ee', '#3f37c9', '#4cc9f0', '#4895ef', '#560bad'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      confetti.style.backgroundColor = color;
+      confetti.style.left = Math.random() * 100 + 'vw';
+      
+      const animationDuration = Math.random() * 3 + 2;
+      confetti.style.animation = `fall ${animationDuration}s linear forwards`;
+      
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes fall {
+          to {
+            top: 100vh;
+            transform: rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      setTimeout(() => {
+        confetti.remove();
+        style.remove();
+      }, animationDuration * 1000);
+    }
+
+    function shuffleArray(array) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    }
+
+    // Inicializa mostrando a tela inicial
+    window.onload = function() {
+      showStartScreen();
+    };
   </script>
 </body>
 </html>
