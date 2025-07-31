@@ -167,45 +167,6 @@
       border-radius: 5px;
     }
 
-    .xp-container {
-      width: 100%;
-      height: 8px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin: 10px 0;
-      overflow: hidden;
-    }
-
-    .xp-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #4cc9f0, #4361ee);
-      width: 0%;
-      transition: width 0.5s ease;
-      border-radius: 5px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      background-color: rgba(67, 97, 238, 0.1);
-      padding: 15px;
-      border-radius: 10px;
-      font-weight: 600;
-      flex-wrap: wrap;
-    }
-
-    .stat {
-      display: flex;
-      flex-direction: column;
-      margin: 5px;
-    }
-
-    .stat-value {
-      font-size: 1.5rem;
-      color: var(--primary);
-    }
-
     .question {
       font-size: 1.4rem;
       margin: 25px 0;
@@ -385,63 +346,29 @@
       margin-bottom: 5px;
     }
 
-    .level-container {
+    .stats {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .level-info {
-      display: flex;
-      align-items: center;
-    }
-
-    .level-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-
-    .achievement {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      margin: 5px 0;
+      margin-bottom: 20px;
       background-color: rgba(67, 97, 238, 0.1);
+      padding: 15px;
       border-radius: 10px;
+      font-weight: 600;
+      flex-wrap: wrap;
     }
 
-    .achievement-icon {
-      font-size: 1.5rem;
-      margin-right: 10px;
-    }
-
-    .achievement-locked {
-      opacity: 0.5;
-    }
-
-    .profile-pic {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
+    .stat {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin: 0 auto 15px;
+      flex-direction: column;
+      margin: 5px;
     }
 
-    #start-screen, #quiz-screen, #profile-screen, #achievements-screen {
+    .stat-value {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    #start-screen, #quiz-screen {
       display: none;
     }
 
@@ -481,43 +408,10 @@
     <button class="btn" onclick="startGame()">
       <span class="emoji">🎮</span> Começar Jogo
     </button>
-    <button class="btn" onclick="showProfile()">
-      <span class="emoji">👤</span> Meu Perfil
-    </button>
-    <button class="btn" onclick="showAchievements()">
-      <span class="emoji">🏆</span> Conquistas
-    </button>
-    <div style="margin-top: 30px; text-align: left; background-color: rgba(67, 97, 238, 0.05); padding: 15px; border-radius: 10px;">
-      <h3 style="margin-top: 0; color: var(--primary);">Novo Sistema de Progressão:</h3>
-      <ul style="padding-left: 20px;">
-        <li>3 níveis de dificuldade: Iniciante, Intermediário e Avançado</li>
-        <li>Barra de experiência e sistema de níveis</li>
-        <li>Conteúdo que desbloqueia conforme você progride</li>
-        <li>Conquistas para desafios especiais</li>
-      </ul>
-    </div>
   </div>
 
   <div class="container" id="quiz-screen">
     <h1>Segurança na Internet</h1>
-    
-    <div class="level-container">
-      <div class="level-info">
-        <div class="level-badge" id="level-badge">1</div>
-        <div>
-          <div>Nível <span id="level">1</span></div>
-          <div id="level-name" class="beginner">Iniciante</div>
-        </div>
-      </div>
-      <div style="width: 60%;">
-        <div style="text-align: right; font-size: 0.8rem; margin-bottom: 3px;">
-          <span id="current-xp">0</span>/<span id="next-level-xp">100</span> XP
-        </div>
-        <div class="xp-container">
-          <div class="xp-bar" id="xp-bar"></div>
-        </div>
-      </div>
-    </div>
     
     <div class="lives" id="lives-container">
       <span class="life">❤️</span>
@@ -560,281 +454,11 @@
     </button>
   </div>
 
-  <div class="container" id="profile-screen">
-    <h1>Meu Perfil</h1>
-    
-    <div class="profile-pic" id="profile-pic">
-      👤
-    </div>
-    
-    <h2 id="player-name">Jogador</h2>
-    
-    <div class="stats">
-      <div class="stat">
-        <span>Nível</span>
-        <span class="stat-value" id="profile-level">1</span>
-      </div>
-      <div class="stat">
-        <span>XP</span>
-        <span class="stat-value" id="profile-xp">0</span>
-      </div>
-      <div class="stat">
-        <span>Acertos</span>
-        <span class="stat-value" id="profile-correct">0</span>
-      </div>
-    </div>
-    
-    <div style="text-align: left; margin: 20px 0;">
-      <h3 style="color: var(--primary);">Progresso:</h3>
-      <div style="margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between;">
-          <span>Iniciante</span>
-          <span id="beginner-progress">0%</span>
-        </div>
-        <div class="progress-container">
-          <div class="progress-bar" id="beginner-bar" style="background: var(--beginner); width: 0%;"></div>
-        </div>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between;">
-          <span>Intermediário</span>
-          <span id="intermediate-progress">0%</span>
-        </div>
-        <div class="progress-container">
-          <div class="progress-bar" id="intermediate-bar" style="background: var(--intermediate); width: 0%;"></div>
-        </div>
-      </div>
-      <div>
-        <div style="display: flex; justify-content: space-between;">
-          <span>Avançado</span>
-          <span id="advanced-progress">0%</span>
-        </div>
-        <div class="progress-container">
-          <div class="progress-bar" id="advanced-bar" style="background: var(--advanced); width: 0%;"></div>
-        </div>
-      </div>
-    </div>
-    
-    <button class="btn" onclick="showStartScreen()">
-      <span class="emoji">🏠</span> Voltar
-    </button>
-  </div>
-
-  <div class="container" id="achievements-screen">
-    <h1>Conquistas</h1>
-    
-    <div id="achievements-list" style="text-align: left;">
-      <!-- Conquistas serão adicionadas aqui pelo JavaScript -->
-    </div>
-    
-    <button class="btn" onclick="showStartScreen()">
-      <span class="emoji">🏠</span> Voltar
-    </button>
-  </div>
-
   <div class="celebrate" id="celebrate"></div>
 
   <p class="creditos">&copy; 2025 – Desenvolvido por Nelson Pedroso Norbach. Todos os direitos reservados.</p>
 
   <script>
-    // Sistema de Progressão
-    const player = {
-      name: "Jogador",
-      level: 1,
-      xp: 0,
-      nextLevelXp: 100,
-      correctAnswers: 0,
-      totalAnswers: 0,
-      beginnerProgress: 0,
-      intermediateProgress: 0,
-      advancedProgress: 0,
-      unlockedLevels: ["beginner"],
-      achievements: []
-    };
-
-    // Carrega o progresso do localStorage
-    function loadProgress() {
-      const savedProgress = localStorage.getItem('securityGameProgress');
-      if (savedProgress) {
-        Object.assign(player, JSON.parse(savedProgress));
-      }
-    }
-
-    // Salva o progresso no localStorage
-    function saveProgress() {
-      localStorage.setItem('securityGameProgress', JSON.stringify(player));
-    }
-
-    // Adiciona XP e verifica se subiu de nível
-    function addXP(amount) {
-      player.xp += amount;
-      player.totalAnswers += 1;
-      
-      // Verifica se subiu de nível
-      if (player.xp >= player.nextLevelXp) {
-        player.level += 1;
-        player.xp = player.xp - player.nextLevelXp;
-        player.nextLevelXp = Math.floor(player.nextLevelXp * 1.5);
-        
-        // Desbloqueia novos níveis conforme progride
-        if (player.level >= 5 && !player.unlockedLevels.includes('intermediate')) {
-          player.unlockedLevels.push('intermediate');
-          showMessage("Novo nível desbloqueado: Intermediário!");
-        }
-        if (player.level >= 10 && !player.unlockedLevels.includes('advanced')) {
-          player.unlockedLevels.push('advanced');
-          showMessage("Novo nível desbloqueado: Avançado!");
-        }
-        
-        showCelebration(`🎉 Parabéns! Você atingiu o nível ${player.level}!`);
-      }
-      
-      updateProfile();
-      saveProgress();
-    }
-
-    // Atualiza a exibição do perfil
-    function updateProfile() {
-      document.getElementById('profile-level').textContent = player.level;
-      document.getElementById('profile-xp').textContent = player.xp;
-      document.getElementById('profile-correct').textContent = player.correctAnswers;
-      
-      // Atualiza barra de XP
-      document.getElementById('current-xp').textContent = player.xp;
-      document.getElementById('next-level-xp').textContent = player.nextLevelXp;
-      document.getElementById('xp-bar').style.width = `${(player.xp / player.nextLevelXp) * 100}%`;
-      
-      // Atualiza nível
-      document.getElementById('level').textContent = player.level;
-      document.getElementById('level-badge').textContent = player.level;
-      
-      // Atualiza nome do nível
-      const levelNameEl = document.getElementById('level-name');
-      levelNameEl.className = '';
-      if (player.level < 5) {
-        levelNameEl.textContent = "Iniciante";
-        levelNameEl.classList.add('beginner');
-      } else if (player.level < 10) {
-        levelNameEl.textContent = "Intermediário";
-        levelNameEl.classList.add('intermediate');
-      } else {
-        levelNameEl.textContent = "Avançado";
-        levelNameEl.classList.add('advanced');
-      }
-      
-      // Atualiza progresso por nível de dificuldade
-      document.getElementById('beginner-progress').textContent = `${player.beginnerProgress}%`;
-      document.getElementById('beginner-bar').style.width = `${player.beginnerProgress}%`;
-      document.getElementById('intermediate-progress').textContent = `${player.intermediateProgress}%`;
-      document.getElementById('intermediate-bar').style.width = `${player.intermediateProgress}%`;
-      document.getElementById('advanced-progress').textContent = `${player.advancedProgress}%`;
-      document.getElementById('advanced-bar').style.width = `${player.advancedProgress}%`;
-    }
-
-    // Conquistas
-    const achievements = [
-      {
-        id: "beginner_master",
-        name: "Mestre Iniciante",
-        description: "Complete 20 perguntas do nível Iniciante",
-        icon: "📚",
-        check: () => player.beginnerProgress >= 100,
-        xpReward: 50,
-        unlocked: false
-      },
-      {
-        id: "fast_learner",
-        name: "Aprendiz Rápido",
-        description: "Acertar 5 perguntas seguidas",
-        icon: "⚡",
-        check: (currentStreak) => currentStreak >= 5,
-        xpReward: 30,
-        unlocked: false
-      },
-      {
-        id: "perfect_score",
-        name: "Pontuação Perfeita",
-        description: "Acertar todas as perguntas de uma sessão",
-        icon: "💯",
-        check: (sessionScore, totalQuestions) => sessionScore === totalQuestions,
-        xpReward: 100,
-        unlocked: false
-      },
-      {
-        id: "intermediate_unlock",
-        name: "Próximo Nível",
-        description: "Desbloqueie o nível Intermediário",
-        icon: "🔓",
-        check: () => player.unlockedLevels.includes('intermediate'),
-        xpReward: 75,
-        unlocked: false
-      },
-      {
-        id: "advanced_unlock",
-        name: "Expert em Segurança",
-        description: "Desbloqueie o nível Avançado",
-        icon: "🏆",
-        check: () => player.unlockedLevels.includes('advanced'),
-        xpReward: 150,
-        unlocked: false
-      }
-    ];
-
-    // Verifica conquistas
-    function checkAchievements(currentStreak = 0, sessionScore = 0, totalQuestions = 0) {
-      let newAchievements = [];
-      
-      achievements.forEach(achievement => {
-        if (!achievement.unlocked && achievement.check(currentStreak, sessionScore, totalQuestions)) {
-          achievement.unlocked = true;
-          player.achievements.push(achievement.id);
-          newAchievements.push(achievement);
-          addXP(achievement.xpReward);
-        }
-      });
-      
-      if (newAchievements.length > 0) {
-        showAchievementsUnlocked(newAchievements);
-      }
-      
-      saveProgress();
-    }
-
-    // Mostra conquistas desbloqueadas
-    function showAchievementsUnlocked(newAchievements) {
-      let message = "🎉 Conquista desbloqueada!\n";
-      newAchievements.forEach(ach => {
-        message += `\n${ach.icon} ${ach.name} - ${ach.description}`;
-      });
-      
-      alert(message);
-      updateAchievementsDisplay();
-    }
-
-    // Atualiza a exibição das conquistas
-    function updateAchievementsDisplay() {
-      const container = document.getElementById('achievements-list');
-      container.innerHTML = '';
-      
-      achievements.forEach(achievement => {
-        const isUnlocked = player.achievements.includes(achievement.id);
-        
-        const achievementEl = document.createElement('div');
-        achievementEl.className = `achievement ${isUnlocked ? '' : 'achievement-locked'}`;
-        
-        achievementEl.innerHTML = `
-          <div class="achievement-icon">${isUnlocked ? achievement.icon : '🔒'}</div>
-          <div>
-            <div style="font-weight: bold;">${achievement.name}</div>
-            <div style="font-size: 0.9rem;">${achievement.description}</div>
-            ${isUnlocked ? `<div style="font-size: 0.8rem; color: var(--success);">+${achievement.xpReward} XP</div>` : ''}
-          </div>
-        `;
-        
-        container.appendChild(achievementEl);
-      });
-    }
-
     // Banco de perguntas organizado por nível
     const quiz = {
       beginner: [
@@ -1315,7 +939,6 @@
     let answered = false;
     let lives = 3;
     let currentQuestions = [];
-    let currentStreak = 0;
     let currentDifficulty = 'beginner';
 
     // Elementos do DOM
@@ -1335,35 +958,20 @@
     const tipContent = document.getElementById('tip-content');
 
     // Inicialização
-    loadProgress();
-    updateProfile();
-    updateAchievementsDisplay();
-
     function startGame() {
-      // Seleciona perguntas baseado no nível desbloqueado
-      currentDifficulty = getCurrentDifficulty();
+      currentDifficulty = 'beginner';
       currentQuestions = selectQuestions(currentDifficulty);
       
       // Reinicia variáveis da sessão
       currentQuestion = 0;
       score = 0;
       lives = 3;
-      currentStreak = 0;
       
       // Atualiza UI
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('quiz-screen').style.display = 'block';
       updateLivesDisplay();
       showQuestion();
-    }
-
-    function getCurrentDifficulty() {
-      if (player.unlockedLevels.includes('advanced') && player.level >= 10) {
-        return 'advanced';
-      } else if (player.unlockedLevels.includes('intermediate') && player.level >= 5) {
-        return 'intermediate';
-      }
-      return 'beginner';
     }
 
     function selectQuestions(difficulty) {
@@ -1418,26 +1026,12 @@
         feedbackEl.textContent = getRandomCorrectFeedback();
         feedbackEl.className = "feedback correct";
         score++;
-        currentStreak++;
-        player.correctAnswers++;
-        
-        // Adiciona XP baseado na dificuldade
-        const xpGain = currentDifficulty === 'beginner' ? 10 : 
-                      currentDifficulty === 'intermediate' ? 20 : 30;
-        addXP(xpGain);
-        
-        // Atualiza progresso do nível
-        updateDifficultyProgress(1);
-        
-        // Verifica conquistas
-        checkAchievements(currentStreak);
       } else {
         // Resposta incorreta
         options[index].classList.add('incorrect');
         options[q.correta].classList.add('correct');
         feedbackEl.textContent = getRandomIncorrectFeedback();
         feedbackEl.className = "feedback incorrect";
-        currentStreak = 0;
         loseLife();
       }
       
@@ -1455,17 +1049,6 @@
       }
     }
 
-    function updateDifficultyProgress(points) {
-      if (currentDifficulty === 'beginner') {
-        player.beginnerProgress = Math.min(100, player.beginnerProgress + (100 / currentQuestions.length));
-      } else if (currentDifficulty === 'intermediate') {
-        player.intermediateProgress = Math.min(100, player.intermediateProgress + (100 / currentQuestions.length));
-      } else {
-        player.advancedProgress = Math.min(100, player.advancedProgress + (100 / currentQuestions.length));
-      }
-      updateProfile();
-    }
-
     function nextQuestion() {
       currentQuestion++;
       if (currentQuestion < currentQuestions.length) {
@@ -1476,11 +1059,8 @@
     }
 
     function endGame() {
-      // Verifica conquistas finais
-      checkAchievements(currentStreak, score, currentQuestions.length);
-      
       // Mostra resultado
-      const resultMessage = `🎉 Fim do jogo!\n\nVocê acertou ${score} de ${currentQuestions.length} perguntas!\n\nGanhou ${score * (currentDifficulty === 'beginner' ? 10 : currentDifficulty === 'intermediate' ? 20 : 30)} XP`;
+      const resultMessage = `🎉 Fim do jogo!\n\nVocê acertou ${score} de ${currentQuestions.length} perguntas!`;
       
       setTimeout(() => {
         alert(resultMessage);
@@ -1490,26 +1070,10 @@
 
     function showStartScreen() {
       document.getElementById('quiz-screen').style.display = 'none';
-      document.getElementById('profile-screen').style.display = 'none';
-      document.getElementById('achievements-screen').style.display = 'none';
       document.getElementById('start-screen').style.display = 'block';
     }
 
-    function showProfile() {
-      document.getElementById('start-screen').style.display = 'none';
-      document.getElementById('quiz-screen').style.display = 'none';
-      document.getElementById('achievements-screen').style.display = 'none';
-      document.getElementById('profile-screen').style.display = 'block';
-    }
-
-    function showAchievements() {
-      document.getElementById('start-screen').style.display = 'none';
-      document.getElementById('quiz-screen').style.display = 'none';
-      document.getElementById('profile-screen').style.display = 'none';
-      document.getElementById('achievements-screen').style.display = 'block';
-    }
-
-    // Funções auxiliares (timer, feedback, etc.) mantidas da versão anterior
+    // Funções auxiliares (timer, feedback, etc.)
     function startTimer() {
       updateTimerDisplay();
       timer = setInterval(() => {
@@ -1548,7 +1112,6 @@
       
       nextBtn.style.display = lives > 0 ? 'inline-block' : 'none';
       answered = true;
-      currentStreak = 0;
     }
 
     function loseLife() {
@@ -1643,10 +1206,6 @@
         confetti.remove();
         style.remove();
       }, animationDuration * 1000);
-    }
-
-    function showMessage(message) {
-      alert(message);
     }
 
     function shuffleArray(array) {
